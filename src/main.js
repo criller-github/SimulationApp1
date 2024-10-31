@@ -1,10 +1,10 @@
-import { createApp } from 'vue';
+import { createApp } from 'vue'
+import App from './App.vue'
+import vuetify from './plugins/vuetify'
+import { loadFonts } from './plugins/webfontloader'
 
-import App from './App.vue';
-import FriendContact from './components/FriendContact.vue';
+loadFonts()
 
-const app = createApp(App);
-
-app.component('friend-contact', FriendContact);
-
-app.mount('#app');
+createApp(App)
+  .use(vuetify)
+  .mount('#app')
