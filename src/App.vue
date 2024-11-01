@@ -1,19 +1,25 @@
 <template>
   <v-app>
     <v-main>
-      <HelloWorld/>
+      <!--  
+        <HelloWorld/>
+      -->
+      <StartSimulator/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+import StartSimulator from './components/StartSimulator.vue'
+
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    //HelloWorld, 
+    StartSimulator,
   },
 
   data: () => ({
