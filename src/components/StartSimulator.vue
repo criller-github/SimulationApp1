@@ -1,7 +1,7 @@
 <template>
   <div class="simulator">
     <h1>{{ title }}</h1>
-    <p>{{ description }}</p>
+    <div class="desc" v-html="description"></div>
     <!-- ikon, ved ikke hvordan man får ikonet-->
     <i class="fa-solid fa-cat fa-bounce fa-5x my-icon" style="color: #000000;"></i>
     <button @click="startSimulator">{{ buttonText }}</button>
@@ -16,9 +16,10 @@ export default {
     return {
       title: "Velkommen til kæledyrssimulatoren!",
       description: `
-        I løbet af en uge får du notifikationer om fodring, pleje, leg og tømning af kattebakken.
-        Din kat har i alt ni liv. Hver gang du beder om hjælp, koster det ét liv.
-        Det vil koste dig penge, hver gang katten skal fodres.
+        I løbet af en uge får du notifikationer om fodring, pleje, leg og tømning af kattebakken.<br>
+        - Din kat har i alt ni liv. Hver gang du beder om hjælp, koster det ét liv.<br>
+        - Det vil koste dig penge, hver gang katten skal fodres.<br>
+
       `,
       buttonText: "Start kæledyr simulator",
     };
@@ -54,7 +55,7 @@ h1 {
     line-height: 1.3;
 }
 
-p {
+.desc {
   font-size: 1.3rem;
   margin: 0 1rem 1.5rem;
   line-height: 1.5;
