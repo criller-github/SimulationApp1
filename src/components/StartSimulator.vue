@@ -3,6 +3,7 @@
     <h1>{{ title }}</h1>
     <p>{{ description }}</p>
     <!-- ikon, ved ikke hvordan man får ikonet-->
+    <i class="fa-solid fa-cat fa-bounce fa-5x my-icon" style="color: #000000;"></i>
     <button @click="startSimulator">{{ buttonText }}</button>
   </div>
 </template>
@@ -72,5 +73,9 @@ button {
 
 button:hover {
   background-color: #f0626e;
+}
+
+.my-icon {
+  margin: 1.1rem;
 }
 </style>
