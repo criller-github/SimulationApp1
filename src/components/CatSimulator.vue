@@ -73,6 +73,9 @@ export default {
 
     const useHelp = () => {
       message.value = "Dette er en hjælpetekst!";
+      setTimeout(() => {
+        message.value = ""; // Clear message
+      }, 5000);
       if (lives.value.length > 0) {
         lives.value.pop();
       } else {
