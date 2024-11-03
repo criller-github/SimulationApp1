@@ -3,6 +3,7 @@
     <div class="header-container">
       <button id="helpButton" @click="useHelp">?</button>
       <h2>KATTESIMULATOR</h2>
+      <i class="fa-solid fa-money-bills fa-2x" style="color: #f0626e"></i>
     </div>
     <div id="livesContainer">
       <div class="life" v-for="(life, index) in lives" :key="index"></div>
@@ -12,7 +13,9 @@
 
     <div class="cat-container">
         <iframe src="https://giphy.com/embed/H6Yv2GsSjBSnArRtfa" width="480" height="353" style="" frameBorder="0" class="giphy-embed cat-image" allowFullScreen></iframe><p><a href="https://giphy.com/stickers/cat-love-cats-H6Yv2GsSjBSnArRtfa"></a></p>
-        <div class="speech-bubble" v-if="showSpeechBubble">{{ currentSpeech }}</div>
+        <div class="speech-bubble" v-if="showSpeechBubble">{{ currentSpeech }}
+            Jeg har brug for:
+        </div>
     </div>
 
      <div class="icon-container">
