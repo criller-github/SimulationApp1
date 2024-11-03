@@ -15,6 +15,7 @@
 
     <div class="alert" v-if="alertMessage">
       <p>{{ alertMessage }}</p>
+      <button @click="dismissAlert"></button> <!-- Add a button to dismiss the alert -->
     </div>
 
     <div class="cat-container">
@@ -30,7 +31,6 @@
   </div>
 </template>
 
-
 <script>
 import { ref, onMounted } from 'vue';
 
@@ -39,74 +39,76 @@ export default {
     const initialLives = 9;
     const lives = ref(Array(initialLives).fill(null));
     const message = ref('');
-    const alertMessage = ref(''); // New state for alert message
-
+    const alertMessage = ref('');
+    const alertTimeout = ref(null); // New state for alert timeout
     const money = ref(300);
 
-        const fodring = () => {
-    if (money.value >= 20) { // Check if there is enough money
-        money.value -= 20; // Deduct 20 from money
-        alertMessage.value = "Fodring udført! -20 kr";
-    } else {
-        alertMessage.value = "Ikke nok penge til fodring!"; // Alert if not enough money
-    }
-
-    setTimeout(() => {
-        alertMessage.value = ""; // Clear alert message after 5 seconds
-    }, 5000);
+    const handleLifeLoss = () => {
+      if (lives.value.length > 0) {
+        lives.value.pop(); // Remove a life
+        alertMessage.value = "Du har mistet et liv!";
+      } else {
+        alertMessage.value = "Ingen liv tilbage!";
+      }
     };
 
+    const resetAlertTimeout = () => {
+      clearTimeout(alertTimeout.value); // Clear previous timeout
+      alertTimeout.value = setTimeout(() => {
+        handleLifeLoss(); // Lose a life if no response after 1 hour
+      }, 3600000); // 1 hour in milliseconds
+    };
+
+    const showAlert = (message) => {
+      alertMessage.value = message;
+      resetAlertTimeout(); // Start the alert timeout when showing a new alert
+    };
+
+    const dismissAlert = () => {
+      alertMessage.value = ''; // Clear the alert
+      clearTimeout(alertTimeout.value); // Clear the timeout when responding
+    };
+
+    const fodring = () => {
+      if (money.value >= 20) {
+        money.value -= 20;
+        alertMessage.value = "Fodring udført! -20 kr";
+      } else {
+        alertMessage.value = "Ikke nok penge til fodring!";
+      }
+
+      setTimeout(() => {
+        alertMessage.value = "";
+      }, 5000);
+    };
 
     const Kattebakke = () => {
       alertMessage.value = "Rengøring af kattebakke udført!";
       setTimeout(() => {
-        alertMessage.value = ""; // Clear alert message after 5 seconds
+        alertMessage.value = "";
       }, 5000);
     };
 
     const Leg = () => {
       alertMessage.value = "Leg udført!";
       setTimeout(() => {
-        alertMessage.value = ""; // Clear alert message after 5 seconds
+        alertMessage.value = "";
       }, 5000);
     };
 
     const Pleje = () => {
       alertMessage.value = "Pleje udført!";
       setTimeout(() => {
-        alertMessage.value = ""; // Clear alert message after 5 seconds
+        alertMessage.value = "";
       }, 5000);
     };
 
     const useHelp = () => {
       message.value = "Dette er en hjælpetekst!";
       setTimeout(() => {
-        message.value = ""; // Clear message
+        message.value = "";
       }, 5000);
-      if (lives.value.length > 0) {
-        lives.value.pop();
-      } else {
-        message.value = "Ingen liv tilbage!";
-      }
-    };
-
-    // Function to show alerts in the app
-    const showAlert = (message) => {
-      alertMessage.value = message; // Set the alert message
-    };
-
-    // Remove alert message when the corresponding action button is clicked
-    const dismissAlert = (action) => {
-      if (action === 'fodring') {
-        alertMessage.value = "Fodring udført!";
-      } else if (action === 'kattebakke') {
-        alertMessage.value = "Rengøring af kattebakke udført!";
-      } else if (action === 'leg') {
-        alertMessage.value = "Leg udført!";
-      } else if (action === 'pleje') {
-        alertMessage.value = "Pleje udført!";
-      }
-      alertMessage.value = ''; // Clear the alert immediately
+      handleLifeLoss(); // Lose a life when using help
     };
 
     const startRandomAlerts = () => {
@@ -132,15 +134,14 @@ export default {
     };
 
     const getRandomInterval = (timesPerDay) => {
-    const min = (24 / timesPerDay) * 60 * 60 * 1000 * 0.5; // Halvdelen af gennemsnitstiden
-    const max = (24 / timesPerDay) * 60 * 60 * 1000 * 1.5; // 1.5 gange gennemsnitstiden
-    return Math.floor(Math.random() * (max - min) + min);
+      const min = (24 / timesPerDay) * 60 * 60 * 1000 * 0.5; // Halvdelen af gennemsnitstiden
+      const max = (24 / timesPerDay) * 60 * 60 * 1000 * 1.5; // 1.5 gange gennemsnitstiden
+      return Math.floor(Math.random() * (max - min) + min);
     };
 
     //const getRandomInterval = () => {
-    //  return 5000; // Sæt intervallet til 5 sekunder for hurtigere test
+    //return 5000; // Sæt intervallet til 5 sekunder for hurtigere test
     //};
-
 
 
     onMounted(() => {
@@ -148,16 +149,16 @@ export default {
     });
 
     return {
-        lives,
-        message,
-        useHelp,
-        fodring,
-        Kattebakke,
-        Leg,
-        Pleje,
-        alertMessage, // Add to return
-        dismissAlert, // Add to return
-        money,
+      lives,
+      message,
+      useHelp,
+      fodring,
+      Kattebakke,
+      Leg,
+      Pleje,
+      alertMessage,
+      dismissAlert,
+      money,
     };
   }
 };
