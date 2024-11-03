@@ -11,11 +11,14 @@
 
     <p v-if="message" class="message">{{ message }}</p>
 
+    <div class="alert" v-if="alertMessage">
+      <p>{{ alertMessage }}</p>
+      <button @click="dismissAlert">OK</button>
+    </div>
+
     <div class="cat-container">
         <iframe src="https://giphy.com/embed/H6Yv2GsSjBSnArRtfa" width="480" height="353" style="" frameBorder="0" class="giphy-embed cat-image" allowFullScreen></iframe>
-        <div class="speech-bubble" v-if="showSpeechBubble">{{ currentSpeech }}
-            Jeg har brug for:
-        </div>
+        <div class="speech-bubble" v-if="showSpeechBubble">{{ currentSpeech }} Jeg har brug for:</div>
     </div>
 
      <div class="icon-container">
@@ -27,6 +30,7 @@
   </div>
 </template>
 
+
 <script>
 import { ref, onMounted } from 'vue';
 
@@ -35,8 +39,37 @@ export default {
     const initialLives = 9;
     const lives = ref(Array(initialLives).fill(null));
     const message = ref('');
+    const alertMessage = ref(''); // New state for alert message
     const showSpeechBubble = ref(true);
     const currentSpeech = ref('');
+
+    const fodring = () => {
+      message.value = "Fodring udført!";
+      setTimeout(() => {
+        message.value = ""; // Clear message
+      }, 5000);
+    };
+
+    const Kattebakke = () => {
+      message.value = "Rengøring af kattebakke udført!";
+      setTimeout(() => {
+        message.value = ""; // Clear message
+      }, 5000);
+    };
+
+    const Leg = () => {
+      message.value = "Leg udført!";
+      setTimeout(() => {
+        message.value = ""; // Clear message
+      }, 5000);
+    };
+
+    const Pleje = () => {
+      message.value = "Pleje udført!";
+      setTimeout(() => {
+        message.value = ""; // Clear message
+      }, 5000);
+    };
 
     const useHelp = () => {
       message.value = "Dette er en hjælpetekst!";
@@ -47,9 +80,14 @@ export default {
       }
     };
 
-    // Funktioner til at vise alerts for forskellige opgaver
+    // Function to show alerts in the app
     const showAlert = (message) => {
-      alert(message);
+      alertMessage.value = message; // Set the alert message
+    };
+
+    // Function to dismiss the alert
+    const dismissAlert = () => {
+      alertMessage.value = ''; // Clear the alert message
     };
 
     const startRandomAlerts = () => {
@@ -74,7 +112,6 @@ export default {
       }, getRandomInterval(2));
     };
 
-    // Beregn tilfældige intervaller for opgaver (i ms)
     const getRandomInterval = (timesPerDay) => {
       const min = (24 / timesPerDay) * 60 * 60 * 1000 * 0.5; // Halvdelen af gennemsnitstiden
       const max = (24 / timesPerDay) * 60 * 60 * 1000 * 1.5; // 1.5 gange gennemsnitstiden
@@ -91,10 +128,17 @@ export default {
       useHelp,
       showSpeechBubble,
       currentSpeech,
+      fodring,
+      Kattebakke,
+      Leg,
+      Pleje,
+      alertMessage, // Add to return
+      dismissAlert, // Add to return
     };
   }
 };
 </script>
+
 
 <style scoped>
 .app-container {
@@ -193,4 +237,14 @@ export default {
   width: 24px;
   height: 24px;
 }
+
+.alert {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border: 1px solid #ffeeba;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
 </style>
