@@ -13,12 +13,10 @@
 
     <div class="alert" v-if="alertMessage">
       <p>{{ alertMessage }}</p>
-      <button @click="dismissAlert">OK</button>
     </div>
 
     <div class="cat-container">
         <iframe src="https://giphy.com/embed/H6Yv2GsSjBSnArRtfa" width="480" height="353" style="" frameBorder="0" class="giphy-embed cat-image" allowFullScreen></iframe>
-        <div class="speech-bubble" v-if="showSpeechBubble">{{ currentSpeech }} Jeg har brug for:</div>
     </div>
 
      <div class="icon-container">
@@ -40,34 +38,32 @@ export default {
     const lives = ref(Array(initialLives).fill(null));
     const message = ref('');
     const alertMessage = ref(''); // New state for alert message
-    const showSpeechBubble = ref(true);
-    const currentSpeech = ref('');
 
     const fodring = () => {
-      message.value = "Fodring udført!";
+      alertMessage.value = "Fodring udført!";
       setTimeout(() => {
-        message.value = ""; // Clear message
+        alertMessage.value = ""; // Clear alert message after 5 seconds
       }, 5000);
     };
 
     const Kattebakke = () => {
-      message.value = "Rengøring af kattebakke udført!";
+      alertMessage.value = "Rengøring af kattebakke udført!";
       setTimeout(() => {
-        message.value = ""; // Clear message
+        alertMessage.value = ""; // Clear alert message after 5 seconds
       }, 5000);
     };
 
     const Leg = () => {
-      message.value = "Leg udført!";
+      alertMessage.value = "Leg udført!";
       setTimeout(() => {
-        message.value = ""; // Clear message
+        alertMessage.value = ""; // Clear alert message after 5 seconds
       }, 5000);
     };
 
     const Pleje = () => {
-      message.value = "Pleje udført!";
+      alertMessage.value = "Pleje udført!";
       setTimeout(() => {
-        message.value = ""; // Clear message
+        alertMessage.value = ""; // Clear alert message after 5 seconds
       }, 5000);
     };
 
@@ -88,9 +84,18 @@ export default {
       alertMessage.value = message; // Set the alert message
     };
 
-    // Function to dismiss the alert
-    const dismissAlert = () => {
-      alertMessage.value = ''; // Clear the alert message
+    // Remove alert message when the corresponding action button is clicked
+    const dismissAlert = (action) => {
+      if (action === 'fodring') {
+        alertMessage.value = "Fodring udført!";
+      } else if (action === 'kattebakke') {
+        alertMessage.value = "Rengøring af kattebakke udført!";
+      } else if (action === 'leg') {
+        alertMessage.value = "Leg udført!";
+      } else if (action === 'pleje') {
+        alertMessage.value = "Pleje udført!";
+      }
+      alertMessage.value = ''; // Clear the alert immediately
     };
 
     const startRandomAlerts = () => {
@@ -116,10 +121,16 @@ export default {
     };
 
     const getRandomInterval = (timesPerDay) => {
-      const min = (24 / timesPerDay) * 60 * 60 * 1000 * 0.5; // Halvdelen af gennemsnitstiden
-      const max = (24 / timesPerDay) * 60 * 60 * 1000 * 1.5; // 1.5 gange gennemsnitstiden
-      return Math.floor(Math.random() * (max - min) + min);
+    const min = (24 / timesPerDay) * 60 * 60 * 1000 * 0.5; // Halvdelen af gennemsnitstiden
+    const max = (24 / timesPerDay) * 60 * 60 * 1000 * 1.5; // 1.5 gange gennemsnitstiden
+    return Math.floor(Math.random() * (max - min) + min);
     };
+
+    //const getRandomInterval = () => {
+    //  return 5000; // Sæt intervallet til 5 sekunder for hurtigere test
+    //};
+
+
 
     onMounted(() => {
       startRandomAlerts();
@@ -129,8 +140,6 @@ export default {
       lives,
       message,
       useHelp,
-      showSpeechBubble,
-      currentSpeech,
       fodring,
       Kattebakke,
       Leg,
@@ -141,6 +150,7 @@ export default {
   }
 };
 </script>
+
 
 
 <style scoped>
