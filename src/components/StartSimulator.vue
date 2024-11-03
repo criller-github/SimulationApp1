@@ -2,7 +2,6 @@
   <div class="simulator">
     <h1>{{ title }}</h1>
     <div class="desc" v-html="description"></div>
-    <!-- ikon, ved ikke hvordan man får ikonet-->
     <i class="fa-solid fa-cat fa-bounce fa-5x my-icon" style="color: #000000;"></i>
     <button @click="startSimulator">{{ buttonText }}</button>
   </div>
