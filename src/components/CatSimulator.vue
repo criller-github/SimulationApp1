@@ -3,7 +3,9 @@
     <div class="header-container">
       <button id="helpButton" @click="useHelp">?</button>
       <h2>KATTESIMULATOR</h2>
-      <i class="fa-solid fa-money-bills fa-2x" style="color: #f0626e"></i>
+      <div><i class="fa-solid fa-money-bills fa-2x" style="color: #f0626e"></i>
+      <p>{{ money }}kr</p>
+      </div>
     </div>
     <div id="livesContainer">
       <div class="life" v-for="(life, index) in lives" :key="index"></div>
@@ -39,12 +41,21 @@ export default {
     const message = ref('');
     const alertMessage = ref(''); // New state for alert message
 
-    const fodring = () => {
-      alertMessage.value = "Fodring udført!";
-      setTimeout(() => {
+    const money = ref(300);
+
+        const fodring = () => {
+    if (money.value >= 20) { // Check if there is enough money
+        money.value -= 20; // Deduct 20 from money
+        alertMessage.value = "Fodring udført! -20 kr";
+    } else {
+        alertMessage.value = "Ikke nok penge til fodring!"; // Alert if not enough money
+    }
+
+    setTimeout(() => {
         alertMessage.value = ""; // Clear alert message after 5 seconds
-      }, 5000);
+    }, 5000);
     };
+
 
     const Kattebakke = () => {
       alertMessage.value = "Rengøring af kattebakke udført!";
@@ -137,15 +148,16 @@ export default {
     });
 
     return {
-      lives,
-      message,
-      useHelp,
-      fodring,
-      Kattebakke,
-      Leg,
-      Pleje,
-      alertMessage, // Add to return
-      dismissAlert, // Add to return
+        lives,
+        message,
+        useHelp,
+        fodring,
+        Kattebakke,
+        Leg,
+        Pleje,
+        alertMessage, // Add to return
+        dismissAlert, // Add to return
+        money,
     };
   }
 };
