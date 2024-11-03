@@ -12,14 +12,17 @@
     <p v-if="message" class="message">{{ message }}</p>
 
     <div class="cat-container">
-        <iframe src="https://giphy.com/embed/H6Yv2GsSjBSnArRtfa" width="480" height="353" style="" frameBorder="0" class="giphy-embed cat-image" allowFullScreen></iframe><p><a href="https://giphy.com/stickers/cat-love-cats-H6Yv2GsSjBSnArRtfa"></a></p>
+        <iframe src="https://giphy.com/embed/H6Yv2GsSjBSnArRtfa" width="480" height="353" style="" frameBorder="0" class="giphy-embed cat-image" allowFullScreen></iframe>
         <div class="speech-bubble" v-if="showSpeechBubble">{{ currentSpeech }}
             Jeg har brug for:
         </div>
     </div>
 
      <div class="icon-container">
-      <div class="icon-box" v-for="(icon, index) in icons" :key="index" v-html="icon"></div>
+         <button class="icon-box" @click="fodring"><i class="fa-solid fa-bowl-food fa-2x"></i></button>
+         <button class="icon-box" @click="Kattebakke"><i class="fa-solid fa-toilet fa-2x"></i></button>
+         <button class="icon-box" @click="Leg"><i class="fa-solid fa-heart fa-2x"></i></button>
+         <button class="icon-box" @click="Pleje"><i class="fa-solid fa-suitcase-medical fa-2x"></i></button>
     </div>
   </div>
 </template>
@@ -34,12 +37,6 @@ export default {
     const message = ref('');
     const showSpeechBubble = ref(true);
     const currentSpeech = ref('');
-    const icons = [
-    '<i class="fa-solid fa-bowl-food fa-2x"></i>',  
-    '<i class="fa-solid fa-toilet fa-2x"></i>',     
-    '<i class="fa-solid fa-heart fa-2x"></i>',        
-    '<i class="fa-solid fa-suitcase-medical fa-2x"></i>'       
-];
 
     const useHelp = () => {
       message.value = "Dette er en hjælpetekst!";
@@ -94,7 +91,6 @@ export default {
       useHelp,
       showSpeechBubble,
       currentSpeech,
-      icons
     };
   }
 };
