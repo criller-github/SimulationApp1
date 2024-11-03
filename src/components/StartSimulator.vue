@@ -27,7 +27,7 @@ export default {
   methods: {
     startSimulator() {
       // Navigate til en anden component, vores kat simulator.
-      this.$router.push({ name: '' });
+       this.$router.push('/cat-simulator');
     }
   }
 };

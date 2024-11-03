@@ -1,29 +1,15 @@
+<!-- src/App.vue -->
 <template>
   <v-app>
     <v-main>
-      <!--  
-        <HelloWorld/>
-      -->
-      <StartSimulator/>
+      <!-- Brug router-view til dynamisk at vise den aktuelle rute-komponent -->
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import StartSimulator from './components/StartSimulator.vue'
-
-
 export default {
-  name: 'App',
-
-  components: {
-    //HelloWorld, 
-    StartSimulator,
-  },
-
-  data: () => ({
-    //
-  }),
-}
+  name: 'App'
+};
 </script>
