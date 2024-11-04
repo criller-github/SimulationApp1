@@ -31,17 +31,17 @@ export default {
   catImage() {
     // Bestemmer hvilket billede der skal vises baseret på kattens status
     if (this.status.injured) {
-      return require('@/assets/images/cat_injured.webp');
+      return require('@/assets/images/InjuredCat.gif');
     } else if (this.status.weight >= 100) { // hvis weight er større end 100 vises cat_fat.webp
-      return require('@/assets/images/cat_fat.webp'); 
+      return require('@/assets/images/FatCat.gif'); 
     } else if (this.status.hunger <= 30) {
-      return require('@/assets/images/cat_hungry.webp');
+      return require('@/assets/images/HungryCat.gif');
     } else if (this.status.happiness <= 30) {
-      return require('@/assets/images/cat_sad.webp');
+      return require('@/assets/images/SadCat.gif');
     } else if (this.status.hygiene <= 30) {
-      return require('@/assets/images/cat_dirty.webp');
+      return require('@/assets/images/DirtyCat.gif');
     } else {
-      return require('@/assets/images/cat_happy.webp');
+      return require('@/assets/images/cat.gif');
     }
   },
   },
