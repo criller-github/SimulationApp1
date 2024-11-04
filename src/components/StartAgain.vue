@@ -12,7 +12,7 @@
         :width="300"
         aspect-ratio="16/9"
         cover
-        :src="require('@/assets/images/cat_injured.webp')" 
+        :src="require('@/assets/images/deadCat.png')" 
         class="dialog-image"
       ></v-img>
       <v-card-text class="dialog-text">
