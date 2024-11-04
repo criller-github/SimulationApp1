@@ -1,0 +1,351 @@
+<!-- indeholder hovedlogikken og styrer spillets tilstand -->
+<template>
+  <v-app> <!-- v-app er en container til vores app og findes i vue biblotekket -->
+    <v-container fluid> <!--fluid attributten gør, at containeren strækker sig over hele bredden af skærmen-->
+      
+      
+      
+      <!-- Spørgsmålstegn 
+      - v-btn er en knap fra vuetify biblotekket. 
+      - icon attributten gør, at knappen kun viser et ikon. 
+      - @click er en eventlistener, der lytter efter klik på knappen og udfører handleHelp metoden. 
+      - class attributten tilføjer en klasse til knappen og kan styles via css -->
+      <v-btn
+        icon
+        @click="handleHelp"
+        class="help-button"
+      >
+      <!-- viser ikonet fra Material Design Icons (MDI)-->
+        <v-icon>mdi-help-circle</v-icon>
+      </v-btn>
+
+
+
+
+      <!-- Visning af penge -->
+      <!-- disabled attributten gør, at knappen ikke er klik-bar-->
+      <v-btn
+        icon
+        disabled
+        class="money-display"
+      >
+        <v-icon left>mdi-currency-usd</v-icon>
+        {{ money }}
+      </v-btn>
+
+
+
+
+      <!-- Livsindikator -->
+      <!-- LifeIndicator er et komponent, der viser antallet af liv tilbage-->
+      <LifeIndicator :lives="lives" />
+
+
+
+
+
+      <!-- Katten -->
+        <!-- CatComponent er et komponent, der viser kattens billede baseret på dens status
+        - :status="catStatus": Sender hele catStatus objektet som prop til komponenten
+        - @need-update="handleNeedUpdate": Lytter efter en event fra CatComponent, hvis der er behov for at opdatere noget i forælderen
+        - @action-performed="handleActionPerformed": Håndterer handlinger udført via drag-and-drop på katten -->
+      <CatComponent
+        :status="catStatus"
+        @need-update="handleNeedUpdate"
+        @action-performed="handleActionPerformed"
+      />
+
+
+
+      <!-- Handlingsknapper 
+      - <v-row justify="center">: Wrapper til knapperne, centrerer indholdet horisontalt.
+      - <ActionButtonComponent>: En genanvendelig komponent for hver handling (fodre, lege, rense, heale)
+      - icon prop: Angiver hvilket ikon der skal vises på knappen
+      - @action="handleFeed": Binder den relevante metode til handlingen, når knappen aktiveres-->
+      <v-row justify="center">
+        <ActionButtonComponent
+          icon="mdi-food"
+          @action="handleFeed"
+        />
+        <ActionButtonComponent
+          icon="mdi-toy-brick"
+          label="Leg"
+          @action="handlePlay"
+        />
+        <ActionButtonComponent
+          icon="mdi-trash-can"
+          label="Rens Bakke"
+        @action="handleClean"
+        />
+        <ActionButtonComponent
+          icon="mdi-hospital"
+          label="Heal"
+          @action="handleHeal"
+        />
+      </v-row>
+
+      <!-- Notifikation 
+      - viser en notifikation, hvis der er en besked i notification dataen.
+      - v-if="notification": Render kun komponenten, hvis notification ikke er en tom streng.
+      - :message="notification": Sender beskeden som prop til komponenten-->
+      <NotificationComponent 
+      v-if="notification" 
+      :message="notification" />
+    </v-container>
+  </v-app>
+</template>
+
+
+
+
+
+<script>
+import CatComponent from '../../components/Cat.vue';
+import LifeIndicator from '../../components/LifeIndicator.vue';
+import ActionButtonComponent from '../../components/ActionButton.vue';
+import NotificationComponent from '../../components/Notification.vue';
+
+export default {
+  name: 'HomeView',
+  components: {
+    CatComponent,
+    LifeIndicator,
+    ActionButtonComponent,
+    NotificationComponent,
+  },
+  data() {
+    return {
+      lives: 9, // antal liv katten starter med
+      money: 50, // startsantallet af penge
+      catStatus: {
+        hunger: 100, // kattens sult-niveau
+        happiness: 100, // kattens lykke-niveau
+        hygiene: 100, // kattens hygiejne-niveau
+        injured: false, // om katten er skadet
+        weight: 50, // Startvægt
+      },
+      notification: '', // besked, der vises til brugeren
+    };
+  },
+  computed: {
+    //En beregnet property, der returnerer true, hvis kattens vægt er større eller lig med 100
+    isOverweight() {
+      return this.catStatus.weight >= 100;
+    },
+  },
+  methods: {
+    // Håndterer fodringshandlingen, opdaterer kattens sult, vægt, liv og brugerens penge
+    handleFeed() {
+      const foodCost = 10; //penge det koster at fodre katten hver gang
+      if (this.money >= foodCost) { //en if-statement som tjekker om der er nok penge til at fodre katten
+        this.money -= foodCost; //trækker penge fra brugerens pengebeholdning svarende til madprisen
+        this.catStatus.hunger = 100; //sætter kattens sult-niveau til 100
+        if (this.lives < 9) { //en if-statement som tjekker om katten har mistet et liv
+          this.lives++; //hvis katten har mistet et liv, får den et liv tilbage
+        }
+        // Øg vægten
+        this.catStatus.weight += 5; //øger kattens vægt med 5
+        // Begræns vægten til maks 150
+        if (this.catStatus.weight > 150) { //en if-statement som tjekker om kattens vægt er over 150
+          this.catStatus.weight = 150; //sætter kattens vægt til 150 som en maksimal vægtbegrænselse
+        }
+        this.notification = 'Du har fodret katten! Et liv er genoprettet.'; //besked der vises hvis brugeren har fodret katten
+      } else {
+        this.notification = 'Du har ikke nok penge til at fodre katten!'; //besked der vises hvis brugeren ikke har nok penge til at fodre katten
+      }
+    },
+    // Håndterer leg med katten, opdaterer lykke og reducerer vægt, hvis nødvendigt
+    handlePlay() { //metode der kaldes når brugeren leger med katten
+      this.catStatus.happiness = 100; //sætter kattens lykke-niveau til 100
+      // Reducer vægten, hvis den er over normal
+      if (this.catStatus.weight > 50) { //en if-statement som tjekker om kattens vægt er over 50
+        this.catStatus.weight -= 5; //reducerer kattens vægt med 5
+        if (this.catStatus.weight < 50) { //en if-statement som tjekker om kattens vægt er under 50
+          this.catStatus.weight = 50; //sætter kattens vægt til 50 som en minimums vægtbegrænselse
+        }
+      }
+      this.notification = 'Du har leget med katten!'; //besked der vises hvis brugeren har leget med katten
+    },
+    //håndterer rengøring af kattebakken, opdaterer hygiejne og trækker penge
+    handleClean() { //metode der kaldes når brugeren renser kattens bakke
+      const cleanCost = 5; //penge det koster at rense kattens bakke
+      if (this.money >= cleanCost) { //en if-statement som tjekker om der er nok penge til at rense kattens bakke
+        this.money -= cleanCost; //trækker penge fra brugerens pengebeholdning svarende til rengøringsprisen
+        this.catStatus.hygiene = 100; //sætter kattens hygiejne-niveau til 100
+        this.notification = 'Du har renset kattebakken!';
+      } else { //en else-statement der kører hvis brugeren ikke har nok penge til at rense kattens bakke
+        this.notification = 'Du har ikke nok penge til at rense kattebakken!';
+      }
+    },
+    // håndterer healing af katten, hvis den er skadet, og trækker penge
+    handleHeal() { //metode der kaldes når brugeren healer katten
+      const healCost = 50; //penge det koster at heale katten
+      if (this.money >= healCost && this.catStatus.injured) { //en if-statement som tjekker om der er nok penge til at heale katten og om katten er skadet
+        this.money -= healCost; //trækker penge fra brugerens pengebeholdning svarende til helbredelsesprisen
+        this.catStatus.injured = false; //sætter kattens skade til false
+        this.notification = 'Du har healet katten!';
+      } else if (this.catStatus.injured) { //en else-if statement der kører hvis katten er skadet
+        this.notification = 'Du har ikke nok penge til at heale katten!';
+      } else { //en else-statement der kører hvis katten ikke er skadet
+        this.notification = 'Katten er ikke skadet.';
+      }
+    },
+    //sikrer, at behovsværdierne ikke bliver negative
+    handleNeedUpdate(need) { //metode der kaldes når der er behov for at opdatere kattens behov og sikrer at behovene ikke går under 0
+      if (this.catStatus[need] <= 0) {
+        this.catStatus[need] = 0;
+      }
+    },
+    //bestemmer hvilken metode der skal kaldes baseret på handlingen fra drag-and-drop
+    handleActionPerformed(action) {
+      //bestemmer hvilken handling der skal udføres baseret på ikonet
+      if (action === 'mdi-food') {
+        this.handleFeed();
+      } else if (action === 'mdi-toy-brick') {
+        this.handlePlay();
+      } else if (action === 'mdi-trash-can') {
+        this.handleClean();
+      } else if (action === 'mdi-hospital') {
+        this.handleHeal();
+      }
+    },
+    // reducerer liv for at give brugeren hjælp og viser en passende besked
+    handleHelp() {
+        //metode der Reducerer liv med 1 for at give hjælp til brugeren
+      if (this.lives > 0) {
+        this.lives--;
+        let message = this.getHelpMessage(); //henter hjælpebeskeden fra getHelpMessage metoden baseret på kattens status
+        if (this.lives <= 0) {
+          message += ' Katten er desværre død.';
+          this.stopTimers(); // Stopper spillet, hvis livene er opbrugt
+        }
+        this.notification = message;
+      } else {
+        this.notification = 'Du har ingen liv tilbage!';
+      }
+    },
+    // genererer hjælpeteksten baseret på kattens nuværende tilstand
+    getHelpMessage() {
+      if (this.catStatus.injured) {
+        return 'Katten er skadet! Heal den.';
+      } else if (this.catStatus.hunger <= 30) {
+        return 'Katten er sulten! Du skal fodre den.';
+      } else if (this.catStatus.happiness <= 30) {
+        return 'Katten vil lege! Brug legetøjet.';
+      } else if (this.catStatus.hygiene <= 30) {
+        return 'Kattebakken er beskidt! Rens den.';
+      } else if (this.isOverweight) {
+        return 'Katten er overvægtig! Leg med den for at hjælpe den med at tabe sig.';
+      } else {
+        return 'Katten har det godt lige nu!';
+      }
+    },
+    // initialiserer alle timers, der styrer spillets dynamik over tid
+    startTimers() {
+      // Starter en timer, der håndterer sult
+      this.hungerTimer = setInterval(() => {
+        let hungerDecrease = 10;
+        if (this.isOverweight) {
+          hungerDecrease += 5; // Overvægtig kat bliver hurtigere sulten
+        }
+        this.catStatus.hunger -= hungerDecrease; // Reducerer kattens sultniveau
+        if (this.catStatus.hunger <= 30 && this.catStatus.hunger > 0) { //en if-statement der kører hvis kattens sult-niveau er under 30
+          this.notification = 'Miaw'; //besked der vises hvis kattens sult-niveau er under 30
+        }
+      }, 5000); // hver 5. sekund
+
+      // timer for lykke 
+      this.happinessTimer = setInterval(() => { //en timer der håndterer kattens lykke
+        this.catStatus.happiness -= 10; // Reducerer kattens lykkestatus
+        if (this.catStatus.happiness <= 30 && this.catStatus.happiness > 0) {
+          this.notification = 'Miaw';
+        }
+      }, 7000); // hver 7. sekund
+
+      // Hygiene timer
+      this.hygieneTimer = setInterval(() => { //en timer der håndterer kattens hygiejne
+        this.catStatus.hygiene -= 10;
+        if (this.catStatus.hygiene <= 30 && this.catStatus.hygiene > 0) {
+          this.notification = 'Miaw';
+        }
+      }, 9000); // hver 9. sekund
+
+      // Timer for penge
+      this.moneyTimer = setInterval(() => { //en timer der håndterer penge
+        this.money += 5; //tilføjer 5 til brugerens pengebeholdning
+      }, 5000); // hver 5. sekund
+
+      // Timer for skade (sker ikke ligeså ofte)
+      this.injuryTimer = setInterval(() => { //en timer der håndterer kattens skade
+        let baseChance = 0.05; // 5% basechance for at katten bliver skadet
+        if (this.isOverweight) {
+          baseChance += 0.10; // Overvægtig kat har højere chance for at blive skadet (10%)
+        }
+        const chance = Math.random(); //tilfældig chance for at katten bliver skadet
+        if (chance < baseChance && !this.catStatus.injured) { 
+            //en if-statement der kører hvis katten ikke er skadet og chancen for at katten bliver skadet er under basechancen
+          this.catStatus.injured = true; 
+          this.notification = 'Miaw';
+        }
+      }, 10000); // hver 10. sekund
+
+      // funktionen som håndtere logikken for livsnedgang
+      this.livesDecreaseLogic = () => { 
+        let interval = this.catStatus.injured ? 5000 : 10000; // Hurtigere livsnedgang hvis katten er skadet
+
+        if ( //en if-statement der kører hvis katten er skadet, sult-niveauet, lykke-niveauet eller hygiejne-niveauet er under 30
+          this.catStatus.injured ||
+          this.catStatus.hunger <= 30 ||
+          this.catStatus.happiness <= 30 ||
+          this.catStatus.hygiene <= 30
+        ) {
+          this.lives--; //reducerer kattens liv med 1
+          if (this.lives <= 0) {  //en if-statement der kører hvis katten har mistet alle sine liv
+            this.lives = 0;
+            this.notification = 'Katten er desværre død.';
+            this.stopTimers();
+            return;
+          } else {
+            this.notification = 'Miaw';
+          }
+        }
+
+        // Nulstil timeren med det nye interval
+        clearTimeout(this.livesDecreaseTimer); //nulstiller timeren
+        this.livesDecreaseTimer = setTimeout(this.livesDecreaseLogic, interval); //starter timeren igen
+      };
+
+      // Start livsnedgangslogikken
+      this.livesDecreaseTimer = setTimeout(this.livesDecreaseLogic, 10000); //starter livsnedgangslogikken efter 10 sekunder
+    },
+    stopTimers() { //metode der stopper alle timers
+      clearInterval(this.hungerTimer);
+      clearInterval(this.happinessTimer);
+      clearInterval(this.hygieneTimer);
+      clearTimeout(this.livesDecreaseTimer);
+      clearInterval(this.moneyTimer);
+      clearInterval(this.injuryTimer);
+    },
+  },
+  mounted() { //kaldes, når komponenten er monteret på DOM'en; starter timers
+    this.startTimers();
+  },
+  beforeUnmount() { //metode der kaldes, lige før komponenten fjernes fra DOM'en; stopper timers
+    this.stopTimers();
+  },
+};
+</script>
+
+<style scoped>
+.help-button {
+  position: absolute; 
+  top: 10px;
+  left: 10px;
+}
+.money-display {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: green;
+}
+</style>
