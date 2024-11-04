@@ -59,6 +59,8 @@ export default {
 <style scoped>
 .cat-container {
   text-align: center;
+  
+  
 }
 .cat-container img {
   max-width: 300px;

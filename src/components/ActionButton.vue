@@ -21,7 +21,7 @@ fab:
   
   {{ icon }}:
   - Interpolation af icon prop, der indeholder navnet på ikonet (f.eks. 'mdi-food').-->
-    <v-icon>{{ icon }}</v-icon>
+    <v-icon class="icon">{{ icon }}</v-icon>
   </v-btn>
 </template>
 
@@ -44,6 +44,12 @@ export default {
 
 <style scoped>
 .action-button {
+  width: 60px;
+  height: 60px;
   margin: 10px;
 }
+.icon{
+  font-size: 50px;
+}
+
 </style>

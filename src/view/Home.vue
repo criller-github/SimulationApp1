@@ -1,7 +1,7 @@
 <!-- indeholder hovedlogikken og styrer spillets tilstand -->
 <template>
   <v-app> <!-- v-app er en container til vores app og findes i vue biblotekket -->
-    <v-container fluid> <!--fluid attributten gør, at containeren strækker sig over hele bredden af skærmen-->
+    <v-container fluid class="HomeContainer"> <!--fluid attributten gør, at containeren strækker sig over hele bredden af skærmen-->
       
       
       
@@ -397,11 +397,24 @@ export default {
   position: absolute; 
   top: 10px;
   left: 10px;
+  width: 60px;
+  height: 60px;
 }
 .money-display {
   position: absolute;
   top: 10px;
   right: 10px;
   color: green;
+  width: 60px;
+  height: 60px;
+}
+
+.HomeContainer {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>
