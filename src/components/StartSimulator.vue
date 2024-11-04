@@ -2,8 +2,8 @@
   <div class="simulator">
     <h1>{{ title }}</h1>
     <div class="desc" v-html="description"></div>
-    <i class="fa-solid fa-cat fa-bounce fa-5x my-icon" style="color: #000000;"></i>
-    <button @click="startSimulator">{{ buttonText }}</button>
+      <img :src="require('@/assets/images/VelkommenCat.gif')" alt="Cat" width="200" class="my-icon" />
+      <button @click="startSimulator">{{ buttonText }}</button>
   </div>
 </template>
 
@@ -75,6 +75,6 @@ button:hover {
 }
 
 .my-icon {
-  margin: 1.1rem;
+  margin: 0.1rem;
 }
 </style>
