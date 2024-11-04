@@ -100,10 +100,12 @@
 
 
 <script>
-import CatComponent from '../../components/Cat.vue';
-import LifeIndicator from '../../components/LifeIndicator.vue';
-import ActionButtonComponent from '../../components/ActionButton.vue';
-import NotificationComponent from '../../components/Notification.vue';
+// har ændret import CatComponent from '../../components/Cat.vue'; til import CatComponent from '@/components/Cat.vue';
+import CatComponent from '@/components/Cat.vue';
+import LifeIndicator from '@/components/LifeIndicator.vue';
+import ActionButtonComponent from '@/components/ActionButton.vue';
+import NotificationComponent from '@/components/Notification.vue';
+
 
 export default {
   name: 'HomeView',

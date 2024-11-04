@@ -6,7 +6,7 @@ import { loadFonts } from './plugins/webfontloader';
 
 import App from './App.vue';
 import StartSimulator from './components/StartSimulator.vue';
-import CatSimulator from './components/CatSimulator.vue';
+import Home from './view/Home.vue';
 
 // Indlæs skrifttyper
 loadFonts();
@@ -16,7 +16,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: StartSimulator }, // StartSimulator ved rodstien
-    { path: '/cat-simulator', component: CatSimulator } // CatSimulator ruten
+    { path: '/simulator-home', component: Home } // Home ruten
   ]
 });
 
@@ -27,3 +27,4 @@ app.use(vuetify);
 app.use(router);
 
 app.mount('#app');
+
