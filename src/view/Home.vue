@@ -91,6 +91,17 @@
       <NotificationComponent 
       v-if="notification" 
       :message="notification" />
+
+
+       <!-- Indsætter StartAgain komponenten 
+       tilhøre StartAgain.vue
+       -->
+       <StartAgain 
+        :isVisible="showStartAgain" 
+        @update:isVisible="showStartAgain = $event" 
+        @restart-game="resetGame" 
+      />
+
     </v-container>
   </v-app>
 </template>
@@ -105,7 +116,7 @@ import CatComponent from '@/components/Cat.vue';
 import LifeIndicator from '@/components/LifeIndicator.vue';
 import ActionButtonComponent from '@/components/ActionButton.vue';
 import NotificationComponent from '@/components/Notification.vue';
-
+import StartAgain from '@/components/StartAgain.vue'; //tilhøre StartAgain.vue
 
 export default {
   name: 'HomeView',
@@ -114,6 +125,7 @@ export default {
     LifeIndicator,
     ActionButtonComponent,
     NotificationComponent,
+    StartAgain, //tilhøre StartAgain.vue
   },
   data() {
     return {
@@ -127,6 +139,9 @@ export default {
         weight: 50, // Startvægt
       },
       notification: '', // besked, der vises til brugeren
+
+      showStartAgain: false, // Ny property til at styre popup'en. tilhøre StartAgain.vue
+
     };
   },
   computed: {
@@ -211,6 +226,11 @@ export default {
         this.handleHeal();
       }
     },
+    
+
+
+
+
     // reducerer liv for at give brugeren hjælp og viser en passende besked
     handleHelp() {
         //metode der Reducerer liv med 1 for at give hjælp til brugeren
@@ -218,14 +238,46 @@ export default {
         this.lives--;
         let message = this.getHelpMessage(); //henter hjælpebeskeden fra getHelpMessage metoden baseret på kattens status
         if (this.lives <= 0) {
-          message += ' Katten er desværre død.';
           this.stopTimers(); // Stopper spillet, hvis livene er opbrugt
+
+
+          this.showStartAgain = true; // Vis popup'en i stedet for en notifikation. tilhøre StartAgain.vue
+
+
         }
         this.notification = message;
       } else {
         this.notification = 'Du har ingen liv tilbage!';
       }
     },
+
+//--------------------------------------tilført start, tilhøre StartAgain.vue--------------------------------------//
+
+     closePopup() {
+       this.showRestartPopup = false; // Luk popup'en
+      },
+
+    // Nulstiller spillet
+    resetGame() {
+          this.lives = 9; // Reset liv
+          this.money = 50; // Reset penge
+          this.catStatus = {
+            hunger: 100,
+            happiness: 100,
+            hygiene: 100,
+            injured: false,
+            weight: 50,
+          };
+          this.notification = ''; // Nulstil notifikation
+          this.showStartAgain = false; // Skjul restart popup
+          this.startTimers(); // Genstart timerne
+        },
+
+
+//--------------------------------------tilført slut, tilhøre StartAgain.vue--------------------------------------//
+
+
+
     // genererer hjælpeteksten baseret på kattens nuværende tilstand
     getHelpMessage() {
       if (this.catStatus.injured) {
@@ -304,7 +356,9 @@ export default {
           this.lives--; //reducerer kattens liv med 1
           if (this.lives <= 0) {  //en if-statement der kører hvis katten har mistet alle sine liv
             this.lives = 0;
-            this.notification = 'Katten er desværre død.';
+
+            this.showStartAgain = true; // Vis popup'en i stedet for en notifikation. tilhøre StartAgain.vue
+
             this.stopTimers();
             return;
           } else {
