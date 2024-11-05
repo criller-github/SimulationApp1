@@ -7,7 +7,7 @@
     - n er iteratoren
     
     :key="n":
-    - unik nøgle for hver ikon i loopet (krævet af Vue)
+    - unik nøgle for hvert ikon i loopet (krævet af Vue)
 
     :color="n <= lives ? 'red' : 'grey lighten-1'":
     - bestemmer farven på ikonet baseret på, om n er mindre end eller lig med lives

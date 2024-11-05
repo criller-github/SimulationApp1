@@ -17,7 +17,7 @@ export default {
       description: `
         I løbet af en uge får du notifikationer om fodring, pleje, leg og tømning af kattebakken.<br>
         - Din kat har i alt ni liv. Hver gang du beder om hjælp, koster det ét liv.<br>
-        - Det vil koste dig penge, hver gang katten skal fodres.<br>
+        - Det vil koste dig penge, hver gang katten skal fodres, plejes, eller leges med.<br>
       `,
       buttonText: "Start kæledyr simulator",
     };
