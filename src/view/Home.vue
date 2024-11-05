@@ -68,17 +68,17 @@
           @action="handleFeed"
         />
         <ActionButtonComponent
-          icon="mdi-toy-brick"
+          icon="mdi-tennis-ball"
           label="Leg"
           @action="handlePlay"
         />
         <ActionButtonComponent
-          icon="mdi-trash-can"
+          icon="mdi-emoticon-poop"
           label="Rens Bakke"
         @action="handleClean"
         />
         <ActionButtonComponent
-          icon="mdi-hospital"
+          icon="mdi-medical-bag"
           label="Heal"
           @action="handleHeal"
         />
@@ -218,11 +218,11 @@ export default {
       //bestemmer hvilken handling der skal udføres baseret på ikonet
       if (action === 'mdi-food') {
         this.handleFeed();
-      } else if (action === 'mdi-toy-brick') {
+      } else if (action === 'mdi-tennis-ball') {
         this.handlePlay();
-      } else if (action === 'mdi-trash-can') {
+      } else if (action === 'mdi-emoticon-poop') {
         this.handleClean();
-      } else if (action === 'mdi-hospital') {
+      } else if (action === 'mdi-medical-bag') {
         this.handleHeal();
       }
     },

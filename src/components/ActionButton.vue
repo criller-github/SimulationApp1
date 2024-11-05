@@ -53,7 +53,6 @@ export default {
 }
 .icon{
   font-size: 50px;
-  
 }
 
 </style>
