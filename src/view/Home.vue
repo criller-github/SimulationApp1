@@ -399,6 +399,7 @@ export default {
   left: 10px;
   width: 60px;
   height: 60px;
+  font-size: 30px;
 }
 .money-display {
   position: absolute;
