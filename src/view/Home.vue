@@ -41,7 +41,7 @@
       <LifeIndicator :lives="lives" />
 
 
-
+      <p class="dayNR"> Dag {{ day }} </p>
 
 
       <!-- Katten -->
@@ -129,6 +129,7 @@ export default {
   },
   data() {
     return {
+      day: 1, // Tracker dage
       lives: 9, // antal liv katten starter med
       money: 50, // startsantallet af penge
       catStatus: {
@@ -268,6 +269,7 @@ export default {
             injured: false,
             weight: 50,
           };
+          this.day = 1; // Reset dag
           this.notification = ''; // Nulstil notifikation
           this.showStartAgain = false; // Skjul restart popup
           this.startTimers(); // Genstart timerne
@@ -373,6 +375,15 @@ export default {
 
       // Start livsnedgangslogikken
       this.livesDecreaseTimer = setTimeout(this.livesDecreaseLogic, 10000); //starter livsnedgangslogikken efter 10 sekunder
+    
+    
+    // dag: increments day by 1 each day
+    // Kører logik for at tælle dagene op hver 24. time (86400 sekunder)
+      this.dayTimer = setInterval(() => {
+      this.day++; // Øger day-variablen med 1 hver gang denne timer kører
+      }, 86400000); // 86400000 millisekunder = 24 timer
+    
+    
     },
     stopTimers() { //metode der stopper alle timers
       clearInterval(this.hungerTimer);
@@ -381,6 +392,7 @@ export default {
       clearTimeout(this.livesDecreaseTimer);
       clearInterval(this.moneyTimer);
       clearInterval(this.injuryTimer);
+      clearInterval(this.dayTimer);
     },
   },
   mounted() { //kaldes, når komponenten er monteret på DOM'en; starter timers
@@ -422,5 +434,12 @@ export default {
 .icon-Button {
   position: fixed;
   bottom: 40px;
+}
+
+.dayNR {
+  position: absolute;
+  top: 10px;
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>
