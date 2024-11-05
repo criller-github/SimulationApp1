@@ -1,22 +1,18 @@
 <!-- viser beskeder til brugeren -->
 <template>
-<!--
-<v-snackbar>:
-- En Vuetify-komponent, der viser midlertidige beskeder i bunden af skærmen
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="3000"
+      absolute
+      top
+      color="green-lighten-3"
+      class="snackbarMove"
+    >
+      {{ message }}
 
-v-model="visible":
-- to-vejs binding til visible dataen, der bestemmer om snackbaren skal vises eller ej
-- når visible er true, vises snackbaren; når den automatisk lukker, sættes visible til false
-
-:timeout="3000":
-- binder timeout attributten til 3000 millisekunder (3 sekunder)
-- bestemmer hvor længe snackbaren vises, før den automatisk lukker 
-
-{{ message }}:
-interpolation viser beskeden, der er sendt via message prop-->
-  <v-snackbar v-model="visible" :timeout="3000">
-    {{ message }}
-  </v-snackbar>
+      <template v-slot:actions>
+      </template>
+    </v-snackbar>
 </template>
 
 <script>
@@ -25,16 +21,23 @@ export default {
   props: {
     message: String, // modtager beskeden fra parent (Home.vue)
   },
-  data() {
-    return {
-      visible: true, // styrer synligheden af snackbaren
-    };
-  },
-  watch: { // en watcher, der lytter efter ændringer i message prop
-    message() {
-        // når message ændres (dvs. der kommer en ny besked), sættes visible til true, så snackbaren vises igen
-      this.visible = true;
+    data: () => ({
+      snackbar: false,
+    }),
+  watch: { //for at kunne åbne snackbaren automatisk benytter vi en watcher til at lytte efter ændringer i message
+    message(newVal) {
+      if (newVal) {
+      this.snackbar = true;
+    } else { //for at kunne lukke snackbaren når 'message' bliver tom, kan vi bruge en else statement
+      this.snackbar = false;
+    }
     },
   },
 };
 </script>
+
+<style scoped>
+.snackbarMove {
+   top: 200px; /* top placering virker ikke */
+}
+</style>

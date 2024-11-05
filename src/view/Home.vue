@@ -89,7 +89,7 @@
       <!-- Notifikation 
       - viser en notifikation, hvis der er en besked i notification dataen.
       - v-if="notification": Render kun komponenten, hvis notification ikke er en tom streng.
-      - :message="notification": Sender beskeden som prop til komponenten-->
+      - :message="notification": Sender beskeden som prop til watcheren i Nptifcation-->
       <NotificationComponent 
       v-if="notification" 
       :message="notification" />
