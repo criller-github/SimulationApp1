@@ -8,6 +8,9 @@ import App from './App.vue';
 import StartSimulator from './components/StartSimulator.vue';
 import Home from './view/Home.vue';
 
+// Importer ikonkomponenten
+import SvgIcon from '@jamescoyle/vue-icon';
+
 // Indlæs skrifttyper
 loadFonts();
 
@@ -25,6 +28,7 @@ const app = createApp(App);
 
 app.use(vuetify);
 app.use(router);
+app.component('SvgIcon', SvgIcon);  // Registrer ikonkomponenten globalt
 
 app.mount('#app');
 

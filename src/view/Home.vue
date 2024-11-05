@@ -7,16 +7,17 @@
       
       <!-- Spørgsmålstegn 
       - v-btn er en knap fra vuetify biblotekket. 
-      - icon attributten gør, at knappen kun viser et ikon. 
+      - icon attributten gør, at knappen bliver rund. 
       - @click er en eventlistener, der lytter efter klik på knappen og udfører handleHelp metoden. 
       - class attributten tilføjer en klasse til knappen og kan styles via css -->
       <v-btn
         icon
         @click="handleHelp"
         class="help-button"
+        color="grey darken-3"
       >
       <!-- viser ikonet fra Material Design Icons (MDI)-->
-        <v-icon>mdi-help-circle</v-icon>
+        <svg-icon type="mdi" :path="mdiHelp" :width="25" :height="25" color="white"></svg-icon>
       </v-btn>
 
 
@@ -28,9 +29,9 @@
         icon
         disabled
         class="money-display"
-      >
-        <v-icon left>mdi-currency-usd</v-icon>
-        {{ money }}
+        color="green light-3"
+      >{{ money }}
+      <svg-icon type="mdi" :path="mdiCurrencyUsd"></svg-icon>
       </v-btn>
 
 
@@ -65,6 +66,7 @@
       <v-row justify="center" class="icon-Button">
         <ActionButtonComponent
           icon="mdi-food"
+          label="Fodre" 
           @action="handleFeed"
         />
         <ActionButtonComponent
@@ -74,7 +76,7 @@
         />
         <ActionButtonComponent
           icon="mdi-emoticon-poop"
-          label="Rens Bakke"
+          label="Rengør"
         @action="handleClean"
         />
         <ActionButtonComponent
@@ -117,6 +119,8 @@ import LifeIndicator from '@/components/LifeIndicator.vue';
 import ActionButtonComponent from '@/components/ActionButton.vue';
 import NotificationComponent from '@/components/Notification.vue';
 import StartAgain from '@/components/StartAgain.vue'; //tilhøre StartAgain.vue
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiCurrencyUsd, mdiHelp, } from '@mdi/js';
 
 export default {
   name: 'HomeView',
@@ -126,18 +130,20 @@ export default {
     ActionButtonComponent,
     NotificationComponent,
     StartAgain, //tilhøre StartAgain.vue
+    SvgIcon,
   },
   data() {
     return {
       day: 1, // Tracker dage
       lives: 9, // antal liv katten starter med
       money: 50, // startsantallet af penge
+      mdiCurrencyUsd, mdiHelp,
       catStatus: {
-        hunger: 100, // kattens sult-niveau
-        happiness: 100, // kattens lykke-niveau
-        hygiene: 100, // kattens hygiejne-niveau
-        injured: false, // om katten er skadet
-        weight: 50, // Startvægt
+      hunger: 100, // kattens sult-niveau
+      happiness: 100, // kattens lykke-niveau
+      hygiene: 100, // kattens hygiejne-niveau
+      injured: false, // om katten er skadet
+      weight: 50, // Startvægt
       },
       notification: '', // besked, der vises til brugeren
 
@@ -411,13 +417,11 @@ export default {
   left: 10px;
   width: 60px;
   height: 60px;
-  font-size: 30px;
 }
 .money-display {
   position: absolute;
   top: 10px;
   right: 10px;
-  color: green;
   width: 60px;
   height: 60px;
 }

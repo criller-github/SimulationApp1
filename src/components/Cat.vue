@@ -10,11 +10,13 @@
 
 @dragover.prevent:
 - Lytter efter dragover-begivenheden 
-- prevent tillader drop-begivenheden ved at forhindre standard-behavior, der ellers ville blokere drop-->
+- prevent tillader drop-begivenheden ved at forhindre standard-behavior, der ellers ville blokere drop
+- playMeow lytter efter til om der er blevet klikket inde i kattens område-->
   <div
     class="cat-container"
     @drop.prevent="onDrop" 
     @dragover.prevent
+    @click="playMeow"
   >
   <!-- catImage er en computed property, der bestemmer, hvilket billede der skal vises baseret på kattens status -->
     <img :src="catImage" alt="" />
@@ -26,6 +28,11 @@ export default {
   name: 'CatComponent',
   props: {
     status: Object, // Modtager kattens status fra the parent (Home.vue)
+  },
+  data() {
+    return {
+      meowSound: null,
+    };
   },
   computed: {
   catImage() {
@@ -51,6 +58,23 @@ export default {
       const action = event.dataTransfer.getData('action'); // Henter den data (string), der blev sat under drag-start i ActionButton.vue 
       this.$emit('action-performed', action); // emitter en custom event til parent (Home.vue), så den kan håndtere handlingen
     },
+    playMeow() {
+          // Nulstil lyden, hvis den allerede afspilles (for at undgå overlap hvis brugeren klikker flere gange hurtigt)
+      this.meowSound.play();
+    },
+  },
+  //'Mounted' betyder, at noget er blevet sat op og er klar til brug
+  mounted() {
+    // Importer lydfilen og opret et Audio-objekt
+    this.meowSound = new Audio(require('@/assets/sound/cat-growl-96248.mp3')); //Vi bruger require til at importere lydfilen og opretter et nyt audio objekt
+
+
+  },
+  //'BeforeUnmount' betyder, at noget er ved at blive fjernet eller pakket væk
+  beforeUnmount() {
+    // Sørger for at stoppe lyden og frigive ressourcer, når komponenten fjernes
+    this.meowSound.pause();
+    this.meowSound = null;
   },
 };
 </script>
