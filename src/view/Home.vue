@@ -62,7 +62,7 @@
       - <ActionButtonComponent>: En genanvendelig komponent for hver handling (fodre, lege, rense, heale)
       - icon prop: Angiver hvilket ikon der skal vises på knappen
       - @action="handleFeed": Binder den relevante metode til handlingen, når knappen aktiveres-->
-      <v-row justify="center">
+      <v-row justify="center" class="icon-Button">
         <ActionButtonComponent
           icon="mdi-food"
           @action="handleFeed"
@@ -416,5 +416,10 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.icon-Button {
+  position: fixed;
+  bottom: 40px;
 }
 </style>

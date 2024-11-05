@@ -58,9 +58,12 @@ export default {
 <!-- scoped sikrer, at style kun anvendes på denne komponent -->
 <style scoped>
 .cat-container {
-  text-align: center;
-  
-  
+ position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .cat-container img {
   max-width: 300px;

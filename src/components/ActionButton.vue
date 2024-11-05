@@ -47,9 +47,13 @@ export default {
   width: 60px;
   height: 60px;
   margin: 10px;
+  
+
+   
 }
 .icon{
   font-size: 50px;
+  
 }
 
 </style>
