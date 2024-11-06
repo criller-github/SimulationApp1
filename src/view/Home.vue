@@ -54,7 +54,7 @@
 
       <!-- dagsnummer -->
       <v-progress-linear model-value="14" :height="50" color="green" rounded class="progressBar">
-      <p class="dayNR"> DAG {{ day }}</p>
+      <p class="dayNR"> DAG {{ day }} / 7</p>
       </v-progress-linear>
 
       

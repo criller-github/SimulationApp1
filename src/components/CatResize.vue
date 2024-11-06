@@ -11,7 +11,7 @@
   </template>
 
     <p key="1">Kattestørrelse:</p>
-    <v-btn @click="selectSize(0.5)" key="2">Lille</v-btn>
+    <v-btn @click="selectSize(0.7)" key="2">Lille</v-btn>
     <v-btn @click="selectSize(1)" key="3">Mellem</v-btn>
     <v-btn @click="selectSize(1.45)" key="4">Stor</v-btn>
   
