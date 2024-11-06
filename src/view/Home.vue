@@ -34,17 +34,17 @@
       <svg-icon type="mdi" :path="mdiCurrencyUsd"></svg-icon>
       </v-btn>
 
-
-
-
       <!-- Livsindikator -->
       <!-- LifeIndicator er et komponent, der viser antallet af liv tilbage-->
       <LifeIndicator :lives="lives" />
 
 
-      <p class="dayNR"> Dag {{ day }} </p>
+      <p class="dayNR"> DAG {{ day }} </p>
 
-
+      <v-bth class="gear-icon">
+      <!-- Indsætter CatResize komponenten og videregiver catSize -->
+      <CatResize @size-changed="updateCatSize" />
+      </v-bth>
       <!-- Katten -->
         <!-- CatComponent er et komponent, der viser kattens billede baseret på dens status
         - :status="catStatus": Sender hele catStatus objektet som prop til komponenten
@@ -52,9 +52,11 @@
         - @action-performed="handleActionPerformed": Håndterer handlinger udført via drag-and-drop på katten -->
       <CatComponent
         :status="catStatus"
+        :catSize="catSize" 
         @need-update="handleNeedUpdate"
         @action-performed="handleActionPerformed"
       />
+      <!-- Sender catSize som prop til CatComponent -->
 
 
 
@@ -115,6 +117,7 @@
 
 <script>
 // har ændret import CatComponent from '../../components/Cat.vue'; til import CatComponent from '@/components/Cat.vue';
+import CatResize from '@/components/CatResize.vue';
 import CatComponent from '@/components/Cat.vue';
 import LifeIndicator from '@/components/LifeIndicator.vue';
 import ActionButtonComponent from '@/components/ActionButton.vue';
@@ -126,6 +129,7 @@ import { mdiCurrencyUsd, mdiHelp, } from '@mdi/js';
 export default {
   name: 'HomeView',
   components: {
+    CatResize,
     CatComponent,
     LifeIndicator,
     ActionButtonComponent,
@@ -146,6 +150,8 @@ export default {
       injured: false, // om katten er skadet
       weight: 50, // Startvægt
       },
+      catSize: 1, // Standardstørrelse
+
       notification: '', // besked, der vises til brugeren
 
       showStartAgain: false, // Ny property til at styre popup'en. tilhøre StartAgain.vue
@@ -159,6 +165,11 @@ export default {
     },
   },
   methods: {
+    
+    updateCatSize(size) {
+      this.catSize = size; // Opdaterer størrelsen af katten
+    },
+
     // Håndterer fodringshandlingen, opdaterer kattens sult, vægt, liv og brugerens penge
     handleFeed() {
       const foodCost = 10; //penge det koster at fodre katten hver gang
@@ -415,14 +426,14 @@ export default {
 .help-button {
   position: absolute; 
   top: 10px;
-  left: 10px;
+  right: 10px;
   width: 60px;
   height: 60px;
 }
 .money-display {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   width: 60px;
   height: 60px;
 }
@@ -438,13 +449,19 @@ export default {
 
 .icon-Button {
   position: fixed;
-  bottom: 40px;
+  bottom: 30px;
 }
 
 .dayNR {
   position: absolute;
   top: 10px;
   font-size: 20px;
-  font-weight: bold;
 }
+
+.gear-icon {
+    position: fixed;
+    top: 90px;
+    right: 10px;
+}
+
 </style>

@@ -18,9 +18,13 @@
     @dragover.prevent
     @click="playMeow"
   >
+
+
   <!-- catImage er en computed property, der bestemmer, hvilket billede der skal vises baseret på kattens status -->
-    <img :src="catImage" alt="" />
+  <!-- Brug catSize til at bestemme billedets størrelse -->
+    <img :src="catImage" :style="{ transform: 'scale(' + catSize + ')' }" alt="" />
   </div>
+  
 </template>
 
 <script>
@@ -28,6 +32,10 @@ export default {
   name: 'CatComponent',
   props: {
     status: Object, // Modtager kattens status fra the parent (Home.vue)
+    catSize: { // Modtager kattens størrelse som prop fra forælderen
+        type: Number,
+        default: 1, // Standard størrelse
+      },
   },
   data() {
     return {
@@ -92,5 +100,6 @@ export default {
 .cat-container img {
   max-width: 300px;
   height: auto;
+  transition: transform 0.3s;
 }
 </style>
