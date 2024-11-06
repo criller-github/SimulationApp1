@@ -1,8 +1,6 @@
 <!-- knapper til brugerinteraktion (fodre, lege, rense, heale) -->
 <template>
 <!-- 
-fab:
-- gør knappen rund
 
 :draggable="true":
 - Gør knappen dragbar, så brugeren kan trække den
@@ -10,8 +8,9 @@ fab:
 @dragstart="dragStart":
 - Binder dragstart-begivenheden til metoden dragStart-->
   <v-btn
+    stacked
     class="action-button"
-    fab
+    
     :draggable="true"
     @dragstart="dragStart"
   >
@@ -22,14 +21,17 @@ fab:
   {{ icon }}:
   - Interpolation af icon prop, der indeholder navnet på ikonet (f.eks. 'mdi-food').-->
     <v-icon class="icon">{{ icon }}</v-icon>
+    <span>{{ label }}</span>
   </v-btn>
 </template>
 
 <script>
+
 export default {
   name: 'ActionButton',
   props: {
     icon: String, // modtager ikonnavnet fra forælderen (Home.vue) så det rigtige ikon vises
+    label: String, // modtager label fra forælderen (Home.vue) for at vise label under ikonet
   },
   methods: {
     dragStart(event) {
@@ -44,12 +46,12 @@ export default {
 
 <style scoped>
 .action-button {
-  width: 60px;
-  height: 60px;
+  width: 5rem;
+  height: 5rem;
   margin: 10px;
-  
+  color: white;
+  background-color: rgba(255, 0, 0, 0.5);
 
-   
 }
 .icon{
   font-size: 50px;
