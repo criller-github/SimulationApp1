@@ -4,8 +4,7 @@
       v-model="snackbar"
       :timeout="3000"
       absolute
-      top
-      color="green lighten-3"
+      color="green-lighten-1"
       class="snackbarMove"
     >
       {{ message }}
@@ -35,9 +34,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.snackbarMove {
-   top: 200px; /* top placering virker ikke */
-}
-</style>
