@@ -429,6 +429,7 @@ export default {
   right: 10px;
   width: 60px;
   height: 60px;
+  z-index: 1;
 }
 .money-display {
   position: absolute;
@@ -436,6 +437,7 @@ export default {
   left: 10px;
   width: 60px;
   height: 60px;
+  z-index: 1;
 }
 
 .HomeContainer {
@@ -456,12 +458,14 @@ export default {
   position: absolute;
   top: 10px;
   font-size: 20px;
+  z-index: 1;
 }
 
 .gear-icon {
-    position: fixed;
+    position: absolute;
     top: 90px;
     right: 10px;
+    z-index: 1;
 }
 
 </style>

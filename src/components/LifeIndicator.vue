@@ -55,9 +55,13 @@ export default {
 <style scoped>
 .life-indicator {
   margin-top: 25px;
+  z-index: 1;
+  
+  
 }
 
 .life-indicator svg {
   margin: 0 2px;
+  
 }
 </style>

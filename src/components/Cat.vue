@@ -101,5 +101,6 @@ export default {
   max-width: 300px;
   height: auto;
   transition: transform 0.3s;
+  
 }
 </style>
