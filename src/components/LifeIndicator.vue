@@ -39,6 +39,6 @@ export default {
 
 <style scoped>
 .life-indicator {
-  margin-top: 20px;
+  margin-top: 25px;
 }
 </style>

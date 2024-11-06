@@ -102,6 +102,7 @@
         @restart-game="resetGame" 
       />
 
+
     </v-container>
   </v-app>
 </template>
