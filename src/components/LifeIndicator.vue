@@ -54,14 +54,11 @@ export default {
 
 <style scoped>
 .life-indicator {
-  margin-top: 25px;
+  margin-top: 60px;
   z-index: 1;
-  
-  
 }
 
 .life-indicator svg {
   margin: 0 2px;
-  
 }
 </style>
