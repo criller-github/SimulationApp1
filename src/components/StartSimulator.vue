@@ -15,8 +15,8 @@ export default {
     return {
       title: "Velkommen til din personlige kæledyrs-simulator!",
       description: `
-        I løbet af en uge får du notifikationer om fodring, pleje, leg og rengøring.<br>
-        - Din kat har i alt ni liv. Hver gang du beder om hjælp, koster det ét liv.<br>
+        I løbet af 7 dage får du notifikationer om fodring, pleje, leg og rengøring.<br>
+        - Din kat har i alt 9 liv og hver gang du beder om hjælp, koster det ét liv.<br>
         - Det vil koste dig penge, hver gang katten skal fodres, plejes, eller gøre rent.<br>
       `,
       buttonText: "Start kæledyr simulator",
