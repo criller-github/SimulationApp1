@@ -58,6 +58,10 @@
       />
       <!-- Sender catSize som prop til CatComponent -->
 
+      <div v-if="showDragDrop" class="drag-drop">
+        <DragDrop />
+      </div>
+
 
 
       <!-- Handlingsknapper 
@@ -125,10 +129,12 @@ import NotificationComponent from '@/components/Notification.vue';
 import StartAgain from '@/components/StartAgain.vue'; //tilhøre StartAgain.vue
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiCurrencyUsd, mdiHelp, } from '@mdi/js';
+import DragDrop from '@/components/DragDrop.vue'
 
 export default {
   name: 'HomeView',
   components: {
+    DragDrop,
     CatResize,
     CatComponent,
     LifeIndicator,
@@ -156,6 +162,7 @@ export default {
 
       showStartAgain: false, // Ny property til at styre popup'en. tilhøre StartAgain.vue
 
+      showDragDrop: true, // Viser drag-and-drop komponenten
     };
   },
   computed: {
@@ -415,6 +422,12 @@ export default {
   },
   mounted() { //kaldes, når komponenten er monteret på DOM'en; starter timers
     this.startTimers();
+
+    // Timer for at skjule DragDrop efter 1 minut
+    setTimeout(() => {
+      this.showDragDrop = false;
+    }, 10000); // 20 sekunder = 20000 millisekunder
+
   },
   beforeUnmount() { //metode der kaldes, lige før komponenten fjernes fra DOM'en; stopper timers
     this.stopTimers();
@@ -466,6 +479,12 @@ export default {
     top: 90px;
     right: 10px;
     z-index: 1;
+}
+
+.drag-drop {
+  position: absolute;
+  bottom: 130px;
+  text-align: center;
 }
 
 </style>
