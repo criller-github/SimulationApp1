@@ -415,14 +415,14 @@ export default {
 .help-button {
   position: absolute; 
   top: 10px;
-  left: 10px;
+  right: 10px;
   width: 60px;
   height: 60px;
 }
 .money-display {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   width: 60px;
   height: 60px;
 }

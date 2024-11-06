@@ -5,7 +5,7 @@
       :timeout="3000"
       absolute
       top
-      color="green-lighten-3"
+      color="green lighten-3"
       class="snackbarMove"
     >
       {{ message }}
