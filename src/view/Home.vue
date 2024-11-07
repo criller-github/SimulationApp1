@@ -490,7 +490,7 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: rgb(255, 241, 241);
-  background-image: url('@/assets/images/9.jpg');
+  background-image: url('@/assets/images/room.png');
   background-repeat:no-repeat;
   -webkit-background-size:cover;
   -moz-background-size:cover;
@@ -505,6 +505,7 @@ export default {
 .icon-Button {
   position: fixed;
   bottom: 30px;
+  z-index: 1;
 }
 
 .progressBar {
