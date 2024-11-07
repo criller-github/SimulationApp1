@@ -489,7 +489,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: aquamarine;
+  background-color: rgb(255, 241, 241);
 }
 
 .icon-Button {
