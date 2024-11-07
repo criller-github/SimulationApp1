@@ -519,6 +519,7 @@ export default {
   top: 10px;
   font-size: 20px;
   z-index: 1;
+  color: white;
 }
 
 .gear-icon {
@@ -539,6 +540,11 @@ export default {
   background-color: #66BB6A !important; 
   padding: 0.5rem 1rem !important;
 }
+
+:global(.progressBar) {
+  background-color: rgba(102, 187, 106, 0.5) !important;
+}
+
 
 
 </style>
