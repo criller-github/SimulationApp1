@@ -23,23 +23,43 @@
 
 
 
-      <!-- Visning af penge -->
-      <!-- disabled attributten gør, at knappen ikke er klik-bar-->
+      <!-- Visning af penge -->      
       <v-btn
         icon
-        disabled
         class="money-display"
-        color="green light-3"
+        color="green-lighten-1"
+          @click="toggleMoneyTooltip"
       >{{ money }}
       <svg-icon type="mdi" :path="mdiCurrencyUsd"></svg-icon>
+      <v-tooltip
+        content-class="custom-tooltip"
+
+        activator="parent"
+        location="bottom"
+        v-model="showMoneyTooltip"
+        :open-on-hover="false"
+        :open-on-focus="false">
+        Her er dine penge 
+        <br><br>
+        tip: Du tjener 5 penge hvert 5. sekund
+      </v-tooltip>
       </v-btn>
+
+
 
       <!-- Livsindikator -->
       <!-- LifeIndicator er et komponent, der viser antallet af liv tilbage-->
       <LifeIndicator :lives="lives" />
 
 
-      <p class="dayNR"> DAG {{ day }} </p>
+      <!-- dagsnummer -->
+      <v-progress-linear model-value="14" :height="50" color="green" rounded class="progressBar">
+      <p class="dayNR"> DAG {{ day }} / 7</p>
+      </v-progress-linear>
+
+      
+
+
 
       <v-bth class="gear-icon">
       <!-- Indsætter CatResize komponenten og videregiver catSize -->
@@ -149,6 +169,7 @@ export default {
       lives: 9, // antal liv katten starter med
       money: 50, // startsantallet af penge
       mdiCurrencyUsd, mdiHelp,
+      showMoneyTooltip: false, // Viser penge-tooltip
       catStatus: {
       hunger: 100, // kattens sult-niveau
       happiness: 100, // kattens lykke-niveau
@@ -172,6 +193,14 @@ export default {
     },
   },
   methods: {
+    //metode der viser penge-tooltip
+    toggleMoneyTooltip() {
+      this.showMoneyTooltip = true;
+      setTimeout(() => {
+        this.showMoneyTooltip = false;
+      }, 2000);
+
+    },
     
     updateCatSize(size) {
       this.catSize = size; // Opdaterer størrelsen af katten
@@ -468,6 +497,12 @@ export default {
   bottom: 30px;
 }
 
+.progressBar {
+  width: 50%;
+  margin-top: 10px;
+  position: absolute;
+}
+
 .dayNR {
   position: absolute;
   top: 10px;
@@ -487,5 +522,12 @@ export default {
   bottom: 130px;
   text-align: center;
 }
+
+:global(.custom-tooltip) {
+  color: white !important;
+  background-color: #66BB6A !important; 
+  padding: 0.5rem 1rem !important;
+}
+
 
 </style>
