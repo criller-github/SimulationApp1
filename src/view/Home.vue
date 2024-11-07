@@ -490,7 +490,17 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: rgb(255, 241, 241);
+  background-image: url('@/assets/images/9.jpg');
+  background-repeat:no-repeat;
+  -webkit-background-size:cover;
+  -moz-background-size:cover;
+  -o-background-size:cover;
+  background-size:cover;
+  background-position:center;
+  /* ud fra https://stackoverflow.com/questions/12609110/responsive-css-background-images */  
 }
+
+
 
 .icon-Button {
   position: fixed;
