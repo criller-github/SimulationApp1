@@ -2,7 +2,7 @@
   <div class="simulator">
     <h1>{{ title }}</h1>
     <div class="desc" v-html="description"></div>
-      <img :src="require('@/assets/images/VelkommenCat.gif')" alt="Cat" width="200" class="my-icon" />
+      <img :src="require('@/assets/images/CatVelkommenT.gif')" alt="Cat" width="200" class="my-icon" />
       <button @click="startSimulator">{{ buttonText }}</button>
   </div>
 </template>
