@@ -110,7 +110,7 @@
           label="Heal"
           @action="handleHeal"
         />
-      </v-row>
+      </v-row> 
 
       <!-- Notifikation 
       - viser en notifikation, hvis der er en besked i notification dataen.
