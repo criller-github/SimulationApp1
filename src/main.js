@@ -20,7 +20,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: StartSimulator }, // StartSimulator ved rodstien
-    { path: '/simulator-home', component: Home } // Home ruten
+    { path: '/simulator-home', component: Home }, // Home ruten
     { path: '/admin', component: Admin }, // Admin ruten
   ]
 });
