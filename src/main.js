@@ -7,6 +7,7 @@ import { loadFonts } from './plugins/webfontloader';
 import App from './App.vue';
 import StartSimulator from './components/StartSimulator.vue';
 import Home from './view/Home.vue';
+import Admin from './views/Admin.vue';
 
 // Importer ikonkomponenten
 import SvgIcon from '@jamescoyle/vue-icon';
@@ -20,6 +21,7 @@ const router = createRouter({
   routes: [
     { path: '/', component: StartSimulator }, // StartSimulator ved rodstien
     { path: '/simulator-home', component: Home } // Home ruten
+    { path: '/admin', component: Admin }, // Admin ruten
   ]
 });
 
