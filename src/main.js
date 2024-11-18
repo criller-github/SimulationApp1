@@ -7,7 +7,7 @@ import { loadFonts } from './plugins/webfontloader';
 import App from './App.vue';
 import StartSimulator from './components/StartSimulator.vue';
 import Home from './view/Home.vue';
-import Admin from './views/Admin.vue';
+import Admin from './components/Admin.vue';
 
 // Importer ikonkomponenten
 import SvgIcon from '@jamescoyle/vue-icon';
