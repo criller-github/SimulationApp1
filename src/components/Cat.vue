@@ -23,13 +23,13 @@
   <!-- catImage er en computed property, der bestemmer, hvilket billede der skal vises baseret på kattens status -->
   <!-- Brug catSize til at bestemme billedets størrelse -->
     <img :src="catImage" :style="{ transform: 'scale(' + catSize + ')' }" alt="" />
-    <p>{{ catText }}</p> <!--Viser den hentede tekst under kattens billede -->
+    <!-- <p>{{ catText }}</p> Viser den hentede tekst under kattens billede -->
   </div>
   
 </template>
 
 <script>
-import axios from 'axios';
+import CatTextDataService from "@/services/CatTextDataService";
 
 export default {
   name: 'CatComponent',
@@ -44,6 +44,7 @@ export default {
     return {
       meowSound: null,
       catText: '', //gemmer den tekst, der hentes fra backenden
+      lastImageId: "", //gemmer det sidste imageId, der blev brugt til at hente tekst
     };
   },
   computed: {
@@ -90,21 +91,18 @@ export default {
           // Nulstil lyden, hvis den allerede afspilles (for at undgå overlap hvis brugeren klikker flere gange hurtigt)
       this.meowSound.play();
     },
-    async fetchCatText() { //Henter teksten fra backenden baseret på imageId
-      try { // Prøver at hente kattens tekst fra backenden
-        const response = await axios.get('http://localhost:8080/api/cattexts', { // Henter kattens tekst fra backenden
-          params: { // Parametre til at filtrere data
-            image_id: this.imageId, // Baseret på kattens status
-          },
-        });
-        if (response.data.length > 0) { // Hvis der er en tekst, så gem den
-          this.catText = response.data[0].text; // Gemmer teksten fra backenden
+     async fetchCatText() {
+      try {
+        const response = await CatTextDataService.findByImageId(this.imageId);
+        if (response.data.length > 0) {
+          this.catText = response.data[0].text;
+          this.$emit("show-notification", this.catText);
         } else {
-          this.catText = 'Standard tekst'; // Hvis der ikke er nogen tekst, så vis en standard tekst
+          this.catText = "";
         }
       } catch (error) {
-        console.error('Fejl ved hentning af katte-tekst:', error); // Hvis der er en fejl, så vis den i konsollen
-        this.catText = 'Fejl ved hentning af tekst'; // Vis en fejlbesked til brugeren
+        console.error("Fejl ved hentning af katte-tekst:", error);
+        this.catText = "";
       }
     },
   },
@@ -113,17 +111,15 @@ export default {
     // Importer lydfilen og opret et Audio-objekt
     this.meowSound = new Audio(require('@/assets/sound/cat-growl-96248.mp3')); //Vi bruger require til at importere lydfilen og opretter et nyt audio objekt
     this.fetchCatText(); //Henter teksten, når komponenten monteres
+    this.lastImageId = this.imageId; //Gemmer det sidste imageId, der blev brugt til at hente tekst
   },
   watch: {
-    // Hvis kattens status ændres, opdaterer vi catText ved at kalde fetchCatText() igen
-    status: {
-      deep: true,
-      handler() {
+    imageId(newVal, oldVal) {
+      if (newVal !== oldVal) {
         this.fetchCatText();
-      },
+      }
     },
   },
-
 
   //'BeforeUnmount' betyder, at noget er ved at blive fjernet eller pakket væk
   beforeUnmount() {

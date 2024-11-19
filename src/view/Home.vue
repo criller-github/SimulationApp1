@@ -45,6 +45,14 @@
       </v-tooltip>
       </v-btn>
 
+    <v-btn
+      icon
+      @click="$router.push('/admin')"
+      class="admin-button"
+      color="grey darken-3"
+    >
+    <svg-icon type="mdi" :path="mdiAccountCircle" :width="25" :height="25" color="white"></svg-icon>
+    </v-btn>
 
 
       <!-- Livsindikator -->
@@ -72,9 +80,10 @@
         - @action-performed="handleActionPerformed": Håndterer handlinger udført via drag-and-drop på katten -->
       <CatComponent
         :status="catStatus"
-        :catSize="catSize" 
+        :catSize="catSize"
         @need-update="handleNeedUpdate"
         @action-performed="handleActionPerformed"
+        @show-notification="showNotification"
       />
       <!-- Sender catSize som prop til CatComponent -->
 
@@ -148,7 +157,7 @@ import ActionButtonComponent from '@/components/ActionButton.vue';
 import NotificationComponent from '@/components/Notification.vue';
 import StartAgain from '@/components/StartAgain.vue'; //tilhøre StartAgain.vue
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiCurrencyUsd, mdiHelp, } from '@mdi/js';
+import { mdiCurrencyUsd, mdiHelp, mdiAccountCircle} from '@mdi/js';
 import DragDrop from '@/components/DragDrop.vue'
 
 export default {
@@ -168,7 +177,7 @@ export default {
       day: 1, // Tracker dage
       lives: 9, // antal liv katten starter med
       money: 50, // startsantallet af penge
-      mdiCurrencyUsd, mdiHelp,
+      mdiCurrencyUsd, mdiHelp, mdiAccountCircle,
       showMoneyTooltip: false, // Viser penge-tooltip
       catStatus: {
       hunger: 100, // kattens sult-niveau
@@ -199,7 +208,9 @@ export default {
       setTimeout(() => {
         this.showMoneyTooltip = false;
       }, 2000);
-
+    },
+    showNotification(message) { //Vi lytter efter show-notification-eventen fra CatComponent og opdaterer notification
+    this.notification = message; //notification bruges i NotificationComponent til at vise teksten i Snackbar
     },
     
     updateCatSize(size) {

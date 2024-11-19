@@ -7,9 +7,12 @@ import { loadFonts } from './plugins/webfontloader';
 import App from './App.vue';
 import StartSimulator from './components/StartSimulator.vue';
 import Home from './view/Home.vue';
-import Admin from './components/AdminPanel.vue';
 
-// Importer ikonkomponenten
+import AdminPanel from './components/AdminPanel.vue'; // Opdateret import
+import CatTextList from './components/CatTextList.vue';
+import AddCatText from './components/AddCatText.vue';
+import CatText from './components/CatText.vue';
+
 import SvgIcon from '@jamescoyle/vue-icon';
 
 // Indlæs skrifttyper
@@ -21,8 +24,19 @@ const router = createRouter({
   routes: [
     { path: '/', component: StartSimulator }, // StartSimulator ved rodstien
     { path: '/simulator-home', component: Home }, // Home ruten
-    { path: '/admin', component: Admin }, // Admin ruten
-  ]
+
+    // Admin ruter med `AdminPanel` som overordnet komponent
+    {
+      path: '/admin',
+      component: AdminPanel, // Opdateret komponent
+      children: [
+        { path: '', redirect: '/admin/list' }, // Standard route
+        { path: 'list', component: CatTextList, name: 'cattexts' },
+        { path: 'add', component: AddCatText, name: 'add-cattext' },
+        { path: ':id', component: CatText, name: 'cattext-details' },
+      ],
+    },
+  ],
 });
 
 // Opret appen og brug Vuetify og routeren
@@ -30,7 +44,6 @@ const app = createApp(App);
 
 app.use(vuetify);
 app.use(router);
-app.component('SvgIcon', SvgIcon);  // Registrer ikonkomponenten globalt
+app.component('SvgIcon', SvgIcon); // Registrer ikonkomponenten globalt
 
 app.mount('#app');
-
