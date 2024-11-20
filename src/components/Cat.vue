@@ -66,6 +66,7 @@ export default {
   },
    imageId() {
       //Beregner et imageId baseret på kattens tilstand, som vi bruger til at hente den korrekte tekst fra backenden
+      //Computed properties opdateres automatisk, når de afhængige data (i dette tilfælde status) ændrer sig
       if (this.status.injured) {
         return 'injured_cat';
       } else if (this.status.weight >= 100) {
@@ -91,18 +92,19 @@ export default {
           // Nulstil lyden, hvis den allerede afspilles (for at undgå overlap hvis brugeren klikker flere gange hurtigt)
       this.meowSound.play();
     },
+    // Henter tekst fra backenden baseret på kattens tilstand
      async fetchCatText() {
       try {
-        const response = await CatTextDataService.findByImageId(this.imageId);
-        if (response.data.length > 0) {
-          this.catText = response.data[0].text;
-          this.$emit("show-notification", this.catText);
-        } else {
-          this.catText = "";
+        const response = await CatTextDataService.findByImageId(this.imageId); //et KPI kald der henter tekst fra backenden baseret på imageId, og imageId beregnes fra kattens tilstand via en computed property
+        if (response.data.length > 0) { //Hvis der findes data for imageId, sættes this.catText til den tekst, der returneres af API'en
+          this.catText = response.data[0].text; //Sætter catText til den tekst, der returneres af API'en
+          this.$emit("show-notification", this.catText); //Emitter en custom event til parent (Home.vue) for at vise en notifikation med teksten
+        } else { //Hvis der ikke findes data for imageId, sættes this.catText til en tom streng
+          this.catText = ""; //Sætter catText til en tom streng
         }
-      } catch (error) {
-        console.error("Fejl ved hentning af katte-tekst:", error);
-        this.catText = "";
+      } catch (error) { //Hvis der opstår en fejl ved hentning af tekst, logges fejlen og this.catText sættes til en tom streng
+        console.error("Fejl ved hentning af katte-tekst:", error); //Logger fejlen
+        this.catText = ""; //Sætter catText til en tom streng
       }
     },
   },
@@ -114,9 +116,9 @@ export default {
     this.lastImageId = this.imageId; //Gemmer det sidste imageId, der blev brugt til at hente tekst
   },
   watch: {
-    imageId(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.fetchCatText();
+    imageId(newVal, oldVal) { //Watcheren lytter efter ændringer i imageId og kalder fetchCatText, når der sker en ændring
+      if (newVal !== oldVal) { //Hvis det nye imageId er forskelligt fra det gamle imageId, kaldes fetchCatText
+        this.fetchCatText(); //Henter teksten, når imageId ændres
       }
     },
   },
