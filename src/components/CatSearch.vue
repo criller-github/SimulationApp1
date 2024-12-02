@@ -12,7 +12,7 @@
       ></v-img>
 
       <v-card-text class="dialog-text">
-        <p>Prøv igen om <span>{{ hoursLeft }}</span> timer og <span>{{ minutesLeft }}</span> minutter</p>
+        <p>Prøv igen om <span>{{ minutesLeft }}</span> minutter</p>
       </v-card-text>
       <v-card-actions>
         <v-btn 
@@ -39,9 +39,7 @@ export default {
     
   },
   computed: {
-    hoursLeft() {
-      return Math.floor(this.countdown / 3600); // Timer
-    },
+    
     minutesLeft() {
       return Math.floor((this.countdown % 3600) / 60); // Minutter
     },
