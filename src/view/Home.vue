@@ -45,15 +45,13 @@
       </v-tooltip>
       </v-btn>
 
-
-      <!-- Admin-knap -->
     <v-btn
       icon
       @click="$router.push('/admin')"
       class="admin-button"
       color="grey darken-3"
     >
-    <svg-icon type="mdi" :path="mdiAccountCircle" color="white"></svg-icon>
+    <svg-icon type="mdi" :path="mdiAccountCircle" :width="25" :height="25" color="white"></svg-icon>
     </v-btn>
 
 
@@ -211,7 +209,6 @@ export default {
         this.showMoneyTooltip = false;
       }, 2000);
     },
-    //Cat.vue emitter en event (show-notification) med den hentede tekst, som modtages i Home.vue
     showNotification(message) { //Vi lytter efter show-notification-eventen fra CatComponent og opdaterer notification
     this.notification = message; //notification bruges i NotificationComponent til at vise teksten i Snackbar
     },
@@ -235,7 +232,7 @@ export default {
         if (this.catStatus.weight > 150) { //en if-statement som tjekker om kattens vægt er over 150
           this.catStatus.weight = 150; //sætter kattens vægt til 150 som en maksimal vægtbegrænselse
         }
-        //this.notification = 'Du har fodret katten! Et liv er genoprettet.'; //besked der vises hvis brugeren har fodret katten
+        this.notification = 'Du har fodret katten! Et liv er genoprettet.'; //besked der vises hvis brugeren har fodret katten
       } else {
         this.notification = 'Du har ikke nok penge til at fodre katten!'; //besked der vises hvis brugeren ikke har nok penge til at fodre katten
       }
@@ -373,19 +370,25 @@ export default {
           hungerDecrease += 5; // Overvægtig kat bliver hurtigere sulten
         }
         this.catStatus.hunger -= hungerDecrease; // Reducerer kattens sultniveau
-        
+        if (this.catStatus.hunger <= 30 && this.catStatus.hunger > 0) { //en if-statement der kører hvis kattens sult-niveau er under 30
+          this.notification = 'Miaw'; //besked der vises hvis kattens sult-niveau er under 30
+        }
       }, 5000); // hver 5. sekund
 
       // timer for lykke 
       this.happinessTimer = setInterval(() => { //en timer der håndterer kattens lykke
         this.catStatus.happiness -= 10; // Reducerer kattens lykkestatus
-        
+        if (this.catStatus.happiness <= 30 && this.catStatus.happiness > 0) {
+          this.notification = 'Miaw';
+        }
       }, 7000); // hver 7. sekund
 
       // Hygiene timer
       this.hygieneTimer = setInterval(() => { //en timer der håndterer kattens hygiejne
         this.catStatus.hygiene -= 10;
-        
+        if (this.catStatus.hygiene <= 30 && this.catStatus.hygiene > 0) {
+          this.notification = 'Miaw';
+        }
       }, 9000); // hver 9. sekund
 
       // Timer for penge
@@ -403,7 +406,7 @@ export default {
         if (chance < baseChance && !this.catStatus.injured) { 
             //en if-statement der kører hvis katten ikke er skadet og chancen for at katten bliver skadet er under basechancen
           this.catStatus.injured = true; 
-         
+          this.notification = 'Miaw';
         }
       }, 10000); // hver 10. sekund
 
@@ -425,6 +428,8 @@ export default {
 
             this.stopTimers();
             return;
+          } else {
+            this.notification = 'Miaw';
           }
         }
 
@@ -487,16 +492,6 @@ export default {
   height: 60px;
   z-index: 1;
 }
-
-.admin-button {
-  position: absolute;
-  top: 90px;
-  left: 10px;
-  width: 60px;
-  height: 60px;
-  z-index: 1;
-}
-
 
 .HomeContainer {
   position: relative;
