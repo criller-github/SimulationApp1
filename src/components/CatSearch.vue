@@ -3,17 +3,14 @@
     <div class="dialog-card">
       <v-card-title class="dialog-title">Vi leder efter en ny kat til dig</v-card-title>
 
-<iframe src="https://giphy.com/embed/EAREoXJx2hrs3SAMD9" width="480" height="269" style="" frameBorder="0" allowFullScreen></iframe><p></p>
-
-<!--
       <v-img
         :width="300"
         aspect-ratio="16/9"
         cover
-        :src="require('@/assets/images/DeadCat.gif')" 
+        :src="require('@/assets/images/Searching.gif')" 
         class="dialog-image"
       ></v-img>
--->
+
       <v-card-text class="dialog-text">
         <p>Prøv igen om <span>{{ hoursLeft }}</span> timer og <span>{{ minutesLeft }}</span> minutter</p>
       </v-card-text>
@@ -35,8 +32,8 @@ export default {
   name: 'CatSearch',
   data() {
     return {
-        countdown: 60, // 1 minut i sekunder
-      //countdown: 60 * 60, // 1 time i sekunder
+        //countdown: 60, // 1 minut i sekunder, til test
+        countdown: 60 * 60, // 1 time i sekunder
       timer: null, // Timer til nedtælling
     };
     
