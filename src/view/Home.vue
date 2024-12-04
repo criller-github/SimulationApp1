@@ -42,15 +42,13 @@
       </v-tooltip>
       </v-btn>
 
-
-      <!-- Admin-knap -->
     <v-btn
       icon
       @click="$router.push('/admin')"
       class="admin-button"
       color="grey darken-3"
     >
-    <svg-icon type="mdi" :path="mdiAccountCircle" color="white"></svg-icon>
+    <svg-icon type="mdi" :path="mdiAccountCircle" :width="25" :height="25" color="white"></svg-icon>
     </v-btn>
 
 
@@ -392,7 +390,6 @@ export default {
         this.showMoneyTooltip = false;
       }, 2000);
     },
-    //Cat.vue emitter en event (show-notification) med den hentede tekst, som modtages i Home.vue
     showNotification(message) { //Vi lytter efter show-notification-eventen fra CatComponent og opdaterer notification
       this.notification = message; //notification bruges i NotificationComponent til at vise teksten i Snackbar
     },
@@ -711,6 +708,8 @@ export default {
 
             this.stopTimers();
             return;
+          } else {
+            this.notification = 'Miaw';
           }
         }
 
@@ -772,16 +771,6 @@ export default {
   height: 60px;
   z-index: 1;
 }
-
-.admin-button {
-  position: absolute;
-  top: 90px;
-  left: 10px;
-  width: 60px;
-  height: 60px;
-  z-index: 1;
-}
-
 
 .HomeContainer {
   position: relative;

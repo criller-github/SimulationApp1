@@ -7,6 +7,7 @@ import { loadFonts } from './plugins/webfontloader';
 import App from './App.vue';
 import StartSimulator from './components/StartSimulator.vue';
 import Home from './view/Home.vue';
+import CatSearch from './components/CatSearch.vue';
 
 import AdminPanel from './components/AdminPanel.vue'; // Opdateret import
 import CatTextList from './components/CatTextList.vue';
@@ -24,7 +25,7 @@ const router = createRouter({
   routes: [
     { path: '/', component: StartSimulator }, // StartSimulator ved rodstien
     { path: '/simulator-home', component: Home }, // Home ruten
-
+    { path: '/cat-search', component: CatSearch, name: 'cat-search' }, // CatSearch ruten
     // Admin ruter med `AdminPanel` som overordnet komponent
     {
       path: '/admin',
