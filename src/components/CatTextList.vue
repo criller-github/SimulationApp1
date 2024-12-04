@@ -4,11 +4,11 @@
   <v-container>
     <!-- Første række med overskrift og søgefelt -->
     <v-row align="center" class="mt-4 mb-0 pb-0">
-      <!-- Venstre 2/3 med overskrift -->
+      <!-- Venstre 1/3 med overskrift -->
       <v-col cols="12" md="4" class="mb-0 pb-0">
         <h2 class="mb-2">BILLEDENAVNE:</h2>
       </v-col>
-      <!-- Højre 1/3 med søgefelt -->
+      <!-- Højre 2/3 med søgefelt -->
       <v-col cols="12" md="8" class="mb-0 pb-0">
         <!-- v-text-field er en Vuetify-komponent, der fungerer som et inputfelt -->
         <!-- label="Søg efter billednavn" tilføjer en label til inputfeltet -->

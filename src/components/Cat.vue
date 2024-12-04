@@ -1,44 +1,27 @@
 <!-- viser kattens billede baseret på dens tilstand -->
 <template>
-
-
-<!--
-@drop.prevent="onDrop": 
-- Lytter efter drop-begivenheden 
-- prevent forhindrer standard browserbehavior for drop-begivenheden (som ellers ville blokere drop)
-- Kalder metoden onDrop når noget droppes på elementet (cat-container)
-
-@dragover.prevent:
-- Lytter efter dragover-begivenheden 
-- prevent tillader drop-begivenheden ved at forhindre standard-behavior, der ellers ville blokere drop
-- playMeow lytter efter til om der er blevet klikket inde i kattens område-->
   <div
-    class="cat-container"
-    @drop.prevent="onDrop" 
-    @dragover.prevent
-    @click="playMeow"
-  >
-
-
-  <!-- catImage er en computed property, der bestemmer, hvilket billede der skal vises baseret på kattens status -->
-  <!-- Brug catSize til at bestemme billedets størrelse -->
-    <img :src="catImage" :style="{ transform: 'scale(' + catSize + ')' }" alt="" />
-    <!-- <p>{{ catText }}</p> Viser den hentede tekst under kattens billede -->
-  </div>
-  
+  class="cat-container"
+  @click="playMeow">
+  <img :src="catImage" :style="{ transform: 'scale(' + catSize + ')' }" alt="" class="cat-image" />
+</div>
 </template>
 
 <script>
-import CatTextDataService from "@/services/CatTextDataService";
+import CatTextDataService from "@/services/CatTextDataService"; //Importerer CatTextDataService fra services-mappen
 
 export default {
-  name: 'CatComponent',
+  name: 'CatComponent', //Komponentens navn
   props: {
     status: Object, // Modtager kattens status fra the parent (Home.vue)
     catSize: { // Modtager kattens størrelse som prop fra forælderen
-        type: Number,
+        type: Number, 
         default: 1, // Standard størrelse
       },
+    currentProblem: { // Modtager det aktuelle problem fra forælderen(home.vue)
+    type: String,  // Typen er en streng fordi det er en tekst (hunger, happiness, hygiene, injured)
+    default: null, // Standardværdi er null fordi der ikke er noget aktuelt problem i starten
+  },
   },
   data() {
     return {
@@ -49,45 +32,82 @@ export default {
   },
   computed: {
   catImage() {
-    // Bestemmer hvilket billede der skal vises baseret på kattens status
-    if (this.status.injured) {
-      return require('@/assets/images/InjuredCatT.gif');
-    } else if (this.status.weight >= 100) { // hvis weight er større end 100 vises cat_fat.webp
-      return require('@/assets/images/FatCatT.gif'); 
-    } else if (this.status.hunger <= 30) {
-      return require('@/assets/images/HungryCatT.gif');
-    } else if (this.status.happiness <= 30) {
-      return require('@/assets/images/SadCatT.gif');
-    } else if (this.status.hygiene <= 30) {
-      return require('@/assets/images/DirtyCatT.gif');
+    if (!this.currentProblem) {
+      // Hvis der ikke er et aktuelt problem så bliver standardbilledet vist
+      return require('@/assets/images/CatT.gif');
+    }
+
+    // Få niveauet for det aktuelle problem
+    // Hvis det aktuelle problem er 'injured', så brug 'injured' fra status-objektet
+    const problemLevel = this.currentProblem === 'injured' ? (this.status.injured ? 0 : 100) : this.status[this.currentProblem];
+
+    // Tjek om problemets niveau er under 50
+    if (problemLevel < 75) {
+      // Bestem billedet baseret på `currentProblem` og dets niveau
+      switch (this.currentProblem) { //Switch-case statement, der bestemmer billedet baseret på kattens tilstand
+        case 'hunger':
+          return require('@/assets/images/HungryCatT.gif');
+        case 'happiness':
+          return require('@/assets/images/SadCatT.gif');
+        case 'hygiene':
+          // Vis forskellige billeder baseret på hygiejneniveauet
+          if (problemLevel < 10) {
+            return require('@/assets/images/DirtyCat_Level4.gif'); // Meget beskidt
+          } else if (problemLevel < 35) {
+            return require('@/assets/images/DirtyCat_Level3.gif'); // Beskidt
+          } else if (problemLevel < 50) {
+            return require('@/assets/images/DirtyCat_Level2.gif'); // Let beskidt
+          } else {
+            return require('@/assets/images/CatT.gif'); // Lidt beskidt
+          }
+        case 'injured':
+          // Vis forskellige billeder baseret på om katten er skadet eller ej
+          if (this.status.injured) {
+            return require('@/assets/images/InjuredCatT.gif');
+          } else {
+            return require('@/assets/images/CatT.gif');
+          }
+        default:
+          return require('@/assets/images/CatT.gif');
+      }
     } else {
+      // Hvis problemets niveau er 50 eller højere, vis standardbilledet
       return require('@/assets/images/CatT.gif');
     }
   },
+  
+
    imageId() {
       //Beregner et imageId baseret på kattens tilstand, som vi bruger til at hente den korrekte tekst fra backenden
-      //Computed properties opdateres automatisk, når de afhængige data (i dette tilfælde status) ændrer sig
-      if (this.status.injured) {
-        return 'injured_cat';
-      } else if (this.status.weight >= 100) {
-        return 'fat_cat';
-      } else if (this.status.hunger <= 30) {
-        return 'hungry_cat';
-      } else if (this.status.happiness <= 30) {
-        return 'sad_cat';
-      } else if (this.status.hygiene <= 30) {
-        return 'dirty_cat';
-      } else {
-        return 'happy_cat';
+      if (!this.currentProblem) {
+      return 'happy_cat';
+    }
+
+    // Få niveauet for det aktuelle problem
+    const problemLevel = this.currentProblem === 'injured' ? (this.status.injured ? 0 : 100) : this.status[this.currentProblem];
+
+    // Returner et imageId baseret på problemets niveau
+    if (problemLevel < 50) {
+      switch (this.currentProblem) { //Switch-case statement, der bestemmer billedet baseret på kattens tilstand
+        case 'hunger': // Hvis katten er sulten
+          return 'hungry_cat';
+        case 'happiness':
+          return 'sad_cat';
+        case 'hygiene':
+          return 'dirty_cat';
+        case 'injured':
+          return this.status.injured ? 'injured_cat' : 'happy_cat'; // Hvis katten er skadet, returneres 'injured_cat', ellers 'happy_cat'
+        default:
+          return 'happy_cat';
       }
-    },
+    } else {
+      return 'happy_cat';
+    }
   },
+},
   methods: {
     // Håndterer når en handling droppes hen på katten
-    onDrop(event) {
-      const action = event.dataTransfer.getData('action'); // Henter den data (string), der blev sat under drag-start i ActionButton.vue 
-      this.$emit('action-performed', action); // emitter en custom event til parent (Home.vue), så den kan håndtere handlingen
-    },
+    
     playMeow() {
           // Nulstil lyden, hvis den allerede afspilles (for at undgå overlap hvis brugeren klikker flere gange hurtigt)
       this.meowSound.play();
@@ -107,6 +127,12 @@ export default {
         this.catText = ""; //Sætter catText til en tom streng
       }
     },
+    showNotification(message) {
+    // Kun opdater notification, hvis der ikke allerede er en besked
+    if (!this.notification) {
+      this.notification = message;
+    }
+  },
   },
   //'Mounted' betyder, at noget er blevet sat op og er klar til brug
   mounted() {
@@ -129,6 +155,8 @@ export default {
     this.meowSound.pause();
     this.meowSound = null;
   },
+
+
 };
 </script>
 
