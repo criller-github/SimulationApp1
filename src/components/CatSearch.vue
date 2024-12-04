@@ -7,7 +7,7 @@
         :width="300"
         aspect-ratio="16/9"
         cover
-        :src="require('@/assets/images/Searching.gif')" 
+        :src="require('@/assets/images/CatAssembly.gif')" 
         class="dialog-image"
       ></v-img>
 
@@ -75,6 +75,7 @@ export default {
 .dialog-card {  
   overflow: hidden;
   border: none !important;
+  
 }
 
 
