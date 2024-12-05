@@ -246,11 +246,11 @@ export default {
     return {
       currentProblem: null, // Holder styr på det aktuelle problem
       lastProblem: null, // Holder styr på det sidst løste problem for at undgå gentagelser
-      problems: ['hunger', 'happiness', 'hygiene', 'injured'], // Liste over mulige problemer
+      problems: ['hunger', 'happiness', 'hygiene', 'injured', 'overweight'], // Liste over mulige problemer
       lastInteractionTime: 0, // Tidspunkt for sidste interaktion
       day: 1, // Tracker dage
       lives: 9, // antal liv katten starter med
-      money: 50, // startsantallet af penge
+      money: 500, // startsantallet af penge
       mdiCurrencyUsd, mdiHelp, mdiAccountCircle,
       showMoneyTooltip: false, // Viser penge-tooltip
       isPlaying: false, // Holder styr på om brugeren leger med katten
@@ -292,7 +292,6 @@ export default {
       let availableProblems = this.problems.filter(problem => { // Filter metoden bruges til at filtrere problemerne
       const pausedUntil = this.catStatus[`${problem}PausedUntil`]; // Gemmer tidspunktet for pause af problemet for at give brugeren tid til at løse det
       const isPaused = pausedUntil && pausedUntil > now; // Gemmer om problemet er sat på pause 
-      console.log(`Problem: ${problem}, PausedUntil: ${pausedUntil}, IsPaused: ${isPaused}`); // Udskriver problemet, tidspunktet for pause og om problemet er sat på pause
       return !isPaused; // Returnerer problemet, hvis det ikke er sat på pause
       });
 
@@ -344,6 +343,8 @@ export default {
           break;
         case 'injured':
           this.catStatus.injured = true; // Skade opstår med det samme
+          break;
+        case 'overweight':
           break;
         default:
           break;
@@ -409,6 +410,11 @@ export default {
             break;
             case 'injured':
             // da injured er en boolean og ikke et tal, er det ikke nødvendigt at tjekke for 0
+            break;
+            case 'overweight':
+            if (this.catStatus.weight >= 150) {
+              problemUnresolved = true;
+            }
             break;
             default:
             break;
@@ -596,6 +602,19 @@ export default {
         if (action === 'mdi-tennis-ball' && this.isPlaying) { // Hvis brugeren leger med katten
           const previousHappiness = this.catStatus.happiness; // Gem tidligere lykke
 
+          // Tjek om overweight er løst
+          if (this.currentProblem === 'overweight' && this.catStatus.weight <= 100) {
+            // Problem løst
+            this.lastProblem = 'overweight';
+            this.currentProblem = null;
+            // Pause overweight i 20 sekunder ligesom de andre
+            this.catStatus.overweightPausedUntil = Date.now() + 20000;
+            this.notification = 'Katten er ikke længere overvægtig!';
+            setTimeout(() => {
+              this.selectNextProblem();
+            }, 2000);
+          }
+
           // Øg lykke
           this.catStatus.happiness += 1; 
           if (this.catStatus.happiness > 100) this.catStatus.happiness = 100; // Sørg for at lykke ikke går over 100
@@ -704,7 +723,7 @@ export default {
     // Nulstiller spillet
     resetGame() {
   this.lives = 9; // Reset liv
-  this.money = 50; // Reset penge
+  this.money = 500; // Reset penge
   this.catStatus = {
     hunger: 100,
     hungerPausedUntil: null,
@@ -751,7 +770,7 @@ export default {
   startTimers() {
     // Timer for penge
     this.moneyTimer = setInterval(() => {
-      this.money += 5; // Tilføjer 5 til brugerens pengebeholdning
+      this.money += 50; // Tilføjer 5 til brugerens pengebeholdning
     }, 5000); // Hver 5. sekund
 
     // Funktion, der håndterer logikken for livsnedgang
@@ -856,7 +875,7 @@ export default {
     if (savedMoney) {
       this.money = parseInt(savedMoney, 10);
     } else {
-      this.money = 50;
+      this.money = 500;
     }
 
     // Hvis livene er 0 ved genindlæsning, vis popup
