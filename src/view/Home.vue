@@ -187,6 +187,30 @@ export default {
     SvgIcon,
     CatStatusDebug,
   },
+
+  watch: {
+    'catStatus.hunger'(newVal, oldVal) {
+      if (newVal < 50 && oldVal >= 50) {
+        this.notification = 'Miaw!';
+      }
+    },
+    'catStatus.happiness'(newVal, oldVal) {
+      if (newVal < 50 && oldVal >= 50) {
+        this.notification = 'Miaw!';
+      }
+    },
+    'catStatus.hygiene'(newVal, oldVal) {
+      if (newVal < 50 && oldVal >= 50) {
+        this.notification = 'Miaw!';
+      }
+    },
+    'catStatus.injured'(newVal, oldVal) {
+      if (newVal === true && oldVal === false) {
+        this.notification = 'Miaw!';
+      }
+    },
+  },
+
   data() {
     return {
       currentProblem: null, // Holder styr på det aktuelle problem
@@ -215,6 +239,12 @@ export default {
       notification: '', // besked, der vises til brugeren
       showStartAgain: false, // Ny property til at styre popup'en. tilhøre StartAgain.vue
       showDragDrop: true, // Viser drag-and-drop komponenten
+      notifiedStatuses: {
+      hunger: false,
+      happiness: false,
+      hygiene: false,
+      injured: false,
+    },
     };
   },
   computed: {
@@ -236,7 +266,6 @@ export default {
 
       // Ekskluder det sidst løste problem for at undgå gentagelser
       availableProblems = availableProblems.filter(problem => problem !== this.lastProblem); 
-      console.log(`Available problems after excluding lastProblem (${this.lastProblem}):`, availableProblems);
 
       // Hvis ingen andre problemer er tilgængelige, tillad valg af det sidste problem igen
       if (availableProblems.length === 0) {
@@ -666,12 +695,12 @@ export default {
     getHelpMessage() {
       if (this.catStatus.injured) {
         return 'Katten er skadet! Heal den.';
-      } else if (this.catStatus.hunger <= 30) {
+      } else if (this.catStatus.hunger <= 75) {
         return 'Katten er sulten! Du skal fodre den.';
-      } else if (this.catStatus.happiness <= 30) {
-        return 'Katten vil lege! Brug legetøjet.';
-      } else if (this.catStatus.hygiene <= 30) {
-        return 'Kattebakken er beskidt! Rens den.';
+      } else if (this.catStatus.happiness <= 75) {
+        return 'Katten vil gerne lege! Prøv at brug legetøjet.';
+      } else if (this.catStatus.hygiene <= 75) {
+        return 'Katten er beskidt! Rens den.';
       } else if (this.isOverweight) {
         return 'Katten er overvægtig! Leg med den for at hjælpe den med at tabe sig.';
       } else {
@@ -751,6 +780,8 @@ export default {
   beforeUnmount() { //metode der kaldes, lige før komponenten fjernes fra DOM'en; stopper timers
     this.stopTimers();
   },
+
+
 };
 </script>
 
