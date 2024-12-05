@@ -13,13 +13,9 @@ export default {
   name: 'StartSimulator',
   data() {
     return {
-      title: "Velkommen til din personlige kæledyrs-simulator!",
-      description: `
-        I løbet af 7 dage får du notifikationer om fodring, pleje, leg og rengøring.<br>
-        - Din kat har i alt 9 liv og hver gang du beder om hjælp, koster det ét liv.<br>
-        - Det vil koste dig penge, hver gang katten skal fodres, plejes, eller gøre rent.<br>
-      `,
-      buttonText: "Start kæledyr simulator",
+      title: '',
+      description: '',
+      buttonText: '',
     };
   },
   methods: {
@@ -27,7 +23,37 @@ export default {
       // Navigate til en anden component, vores kat simulator.
        this.$router.push('/simulator-home');
     }
+  },
+  mounted() {
+  // Tjek om spillet er igang via localStorage
+  const catDay = localStorage.getItem('catDay');
+  const currentProblem = localStorage.getItem('currentProblem');
+  const lives = localStorage.getItem('lives') ? parseInt(localStorage.getItem('lives'),10) : 9;
+  
+  let inProgress = false;
+  if ((catDay && parseInt(catDay,10) > 1) ||
+      (currentProblem && currentProblem !== 'null' && currentProblem !== 'undefined') ||
+      (lives < 9)) {
+    inProgress = true;
   }
+
+  // Hvis spillet er igang
+  if (inProgress) {
+      // Hvis spillet allerede er i gang
+      this.buttonText = "Fortsæt hvor du slap";
+      this.title = "Velkommen tilbage!";
+      this.description = "Husk, at...<br>- I løbet af 7 dage får du notifikationer om fodring, pleje, leg og rengøring.<br>- Din kat har i alt 9 liv og hver gang du beder om hjælp, koster det ét liv.<br>- Det vil koste dig penge, hver gang katten skal fodres, plejes, eller gøre rent.<br>";
+    } else {
+      // Ingen igangværende status, behold standard tekster
+      this.buttonText = "Start kæledyr simulator";
+      this.title = "Velkommen til din personlige kæledyrs-simulator!";
+      this.description = `
+        I løbet af 7 dage får du notifikationer om fodring, pleje, leg og rengøring.<br>
+        - Din kat har i alt 9 liv og hver gang du beder om hjælp, koster det ét liv.<br>
+        - Det vil koste dig penge, hver gang katten skal fodres, plejes, eller gøre rent.<br>
+      `;
+    }
+},
 };
 </script>
 

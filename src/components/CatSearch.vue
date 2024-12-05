@@ -12,7 +12,7 @@
       ></v-img>
 
       <v-card-text class="dialog-text">
-        <p>Prøv igen om <span>{{ minutesLeft }}</span> minutter</p>
+      <p>Prøv igen om {{ minutesLeft }} minutter og {{ secondsLeft }} sekunder</p>
       </v-card-text>
       <v-card-actions>
         <v-btn 
@@ -33,24 +33,33 @@ export default {
   data() {
     return {
         //countdown: 60, // 1 minut i sekunder, til test
-        countdown: 60 * 60, // 1 time i sekunder
+        countdown: 10, // 
       timer: null, // Timer til nedtælling
     };
     
   },
   computed: {
-    
     minutesLeft() {
-      return Math.floor((this.countdown % 3600) / 60); // Minutter
+      return Math.floor(this.countdown / 60); // Minutter tilbage
+    },
+    secondsLeft() {
+      return this.countdown % 60; // Sekunder tilbage
     },
     canTryAgain() {
-      return this.countdown <= 0; // Hvis tiden er udløbet, kan man prøve igen
+      return this.countdown <= 0;
     },
   },
   methods: {
     restartGame() {
-      // Navigerer til en ny side 
-      window.location.href = '/simulator-home'; 
+      // Rydder spillets tilstande i localStorage
+      localStorage.removeItem('catDay');
+      localStorage.removeItem('catStatus');
+      localStorage.removeItem('currentProblem');
+      localStorage.removeItem('lives');
+      localStorage.removeItem('money');
+
+      // Navigere til simulator-home uden at genindlæse siden
+      this.$router.push('/simulator-home');
     },
     startTimer() {
       this.timer = setInterval(() => {
