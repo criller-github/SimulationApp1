@@ -2,7 +2,7 @@
 <template>
     <v-snackbar
       v-model="snackbar"
-      :timeout="3000"
+      :timeout="6000"
       absolute
       color="green-lighten-1"
       class="snackbarMove"
