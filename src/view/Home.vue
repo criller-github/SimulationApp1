@@ -13,6 +13,21 @@
       </v-btn>
 
 
+      <!-- Baggrundsmusik -->
+      <audio 
+        ref="bgMusic"
+        :src="require('@/assets/sound/puzzle-game-loop-bright-casual-video-game-music-249201.mp3')" 
+        autoplay 
+        loop 
+        style="display: none;">
+      </audio>
+
+      <!-- Knap til at mute/unmute musikken -->
+      <v-btn @click="toggleMute" class="mute-button">
+      <v-icon>{{ isMuted ? 'mdi-volume-off' : 'mdi-volume-high' }}</v-icon>
+      </v-btn>
+    
+
       <!-- Debugging af kattens status (kun for testing) -->
       <CatStatusDebug
       :status="catStatus"
@@ -192,25 +207,42 @@ export default {
   },
 
   watch: {
+    
     // en watcher til at tilføre miaw tekster til ændringen af værdien af kattens status
     'catStatus.hunger'(newVal, oldVal) {
       if (newVal < 50 && oldVal >= 75) {
         this.notification = 'Miaw!';
+        if (this.meowSound) {
+        this.meowSound.currentTime = 0; // start fra begyndelsen
+        this.meowSound.play();
+      }
       }
     },
     'catStatus.happiness'(newVal, oldVal) {
       if (newVal < 50 && oldVal >= 75) {
         this.notification = 'Miaw!';
+        if (this.meowSound) {
+        this.meowSound.currentTime = 0; // start fra begyndelsen
+        this.meowSound.play();
+      }
       }
     },
     'catStatus.hygiene'(newVal, oldVal) {
       if (newVal < 50 && oldVal >= 75) {
         this.notification = 'Miaw!';
+        if (this.meowSound) {
+        this.meowSound.currentTime = 0; // start fra begyndelsen
+        this.meowSound.play();
+      }
       }
     },
     'catStatus.injured'(newVal, oldVal) {
       if (newVal === true && oldVal === false) {
         this.notification = 'Miaw!';
+        if (this.meowSound) {
+        this.meowSound.currentTime = 0; // start fra begyndelsen
+        this.meowSound.play();
+      }
       }
     },
 
@@ -237,17 +269,32 @@ export default {
     money(newMoney) {
       localStorage.setItem('money', newMoney);
     },
+
+    showStartAgain(newVal) {
+      if (newVal === true) {
+        // Når popup bliver vist:
+        if (this.popupSound) {
+          this.popupSound.currentTime = 0;
+          this.popupSound.volume = 0.5;
+          this.popupSound.muted = false; 
+          this.popupSound.play().catch(err => {
+            console.error("Kunne ikke afspille popup-lyd:", err);
+          });
+        }
+      }
+    },
   },
 
   data() {
     return {
+      isMuted: false,
       currentProblem: null, // Holder styr på det aktuelle problem
       lastProblem: null, // Holder styr på det sidst løste problem for at undgå gentagelser
       problems: ['hunger', 'happiness', 'hygiene', 'injured'], // Liste over mulige problemer
       lastInteractionTime: 0, // Tidspunkt for sidste interaktion
       day: 1, // Tracker dage
       lives: 9, // antal liv katten starter med
-      money: 500, // startsantallet af penge
+      money: 100, // startsantallet af penge
       mdiCurrencyUsd, mdiHelp, mdiAccountCircle,
       showMoneyTooltip: false, // Viser penge-tooltip
       isPlaying: false, // Holder styr på om brugeren leger med katten
@@ -266,7 +313,9 @@ export default {
     },
       catSize: 1, // Standardstørrelse
       notification: '', // besked, der vises til brugeren
+      meowSound: null, // tilføj en property til lyd
       showStartAgain: false, // Ny property til at styre popup'en. tilhøre StartAgain.vue
+      popupSound: null,//popup-lyden
       showDragDrop: true, // Viser drag-and-drop komponenten
       notifiedStatuses: {
       hunger: false,
@@ -283,6 +332,15 @@ export default {
     },
   },
   methods: {
+
+    toggleMute() {
+      const audio = this.$refs.bgMusic;
+      if (!audio) return;
+
+      this.isMuted = !this.isMuted;
+      audio.muted = this.isMuted;
+    },
+
     // det næste problem, som katten skal have
     selectNextProblem() {
       const now = Date.now(); // Gemmer tidspunktet for nu fordi at det er en variabel og skal bruges flere gange
@@ -295,7 +353,26 @@ export default {
       // Ekskluder det sidst løste problem for at undgå gentagelser
       availableProblems = availableProblems.filter(problem => problem !== this.lastProblem); 
 
+      // Tjek om der er problemer ≤ 30
+  const lowThresholdProblems = [];
+
+  if (this.catStatus.hunger <= 30) {
+    lowThresholdProblems.push('hunger');
+  }
+  if (this.catStatus.happiness <= 30) {
+    lowThresholdProblems.push('happiness');
+  }
+  if (this.catStatus.hygiene <= 30) {
+    lowThresholdProblems.push('hygiene');
+  }
       
+      // Hvis der findes problemer under eller lig med 30, begræns valget til disse
+  if (lowThresholdProblems.length > 0) {
+    const criticalSet = availableProblems.filter(p => lowThresholdProblems.includes(p));
+    if (criticalSet.length > 0) {
+      availableProblems = criticalSet;
+    }
+  }
 
       // Hvis ingen andre problemer er tilgængelige, tillad valg af det sidste problem igen
       if (availableProblems.length === 0) {
@@ -416,6 +493,10 @@ export default {
           // Reducer liv
           this.lives--;
           this.notification = 'Miav!';
+          if (this.meowSound) {
+            this.meowSound.currentTime = 0; // start fra begyndelsen
+            this.meowSound.play();
+          }
           if (this.lives <= 0) {
             this.lives = 0;
             this.showStartAgain = true; //pop up vises
@@ -500,7 +581,7 @@ export default {
     this.currentProblem = null;
     setTimeout(() => {
       this.selectNextProblem();
-    }, 2000);
+    }, 5000);
   } else {
     // Ikke det aktuelle problem -> ingen liv
     this.notification = 'Du har fodret katten!';
@@ -543,7 +624,7 @@ export default {
       this.currentProblem = null;
       setTimeout(() => {
         this.selectNextProblem();
-      }, 2000);
+      }, 5000);
     } else {
       // Ikke det aktuelle problem -> ingen ekstra liv
       this.notification = 'Katten er nu glad!';
@@ -576,7 +657,7 @@ export default {
         this.currentProblem = null;
         setTimeout(() => {
           this.selectNextProblem();
-        }, 2000);
+        }, 5000);
       } else {
         // Ikke det aktuelle problem
         this.notification = 'Katten er nu ren!';
@@ -612,7 +693,7 @@ export default {
         this.currentProblem = null;
         setTimeout(() => {
           this.selectNextProblem();
-        }, 2000);
+        }, 10000);
       } else {
         // Ikke det aktuelle problem
         this.notification = 'Du har healet katten!';
@@ -683,7 +764,7 @@ export default {
           this.currentProblem = null;
           setTimeout(() => {
             this.selectNextProblem();
-          }, 2000);
+          }, 5000);
         } else {
           // Ikke det aktuelle problem
           this.notification = 'Katten er nu glad!';
@@ -712,7 +793,7 @@ export default {
           this.currentProblem = null;
           setTimeout(() => {
             this.selectNextProblem();
-          }, 2000);
+          }, 5000);
         } else {
           // Ikke det aktuelle problem
           this.notification = 'Katten er nu ren!';
@@ -729,10 +810,10 @@ export default {
     handleInteractionStart(action) {
       if (action === 'mdi-tennis-ball') { // Hvis brugeren leger med katten
         this.isPlaying = true; // Sætter isPlaying til true
-        this.notification = 'Du leger med katten'; // Besked til brugeren
+        this.notification = 'Bevæg legetøet frem og tilbage på katten!'; // Besked til brugeren
       } else if (action === 'mdi-emoticon-poop') { // Hvis brugeren renser kattens bakke
         this.isCleaning = true; // Sætter isCleaning til true
-        this.notification = 'Du renser katten!'; // Besked til brugeren
+        this.notification = 'Bevæg børsten frem og tilbage på katten!'; // Besked til brugeren
       }
     },
     handleInteractionEnd(action) { //metode der kaldes når brugeren afslutter en interaktion
@@ -768,7 +849,7 @@ export default {
     // Nulstiller spillet
     resetGame() {
   this.lives = 9; // Reset liv
-  this.money = 500; // Reset penge
+  this.money = 100; // Reset penge
   this.catStatus = {
     hunger: 100,
     hungerPausedUntil: null,
@@ -814,7 +895,7 @@ export default {
   startTimers() {
     // Timer for penge
     this.moneyTimer = setInterval(() => {
-      this.money += 50; // Tilføjer 5 til brugerens pengebeholdning
+      this.money += 5; // Tilføjer 5 til brugerens pengebeholdning
     }, 5000); // Hver 5. sekund
 
     // Funktion, der håndterer logikken for livsnedgang
@@ -828,15 +909,22 @@ export default {
       ) {
         this.lives--; // Reducerer kattens liv med 1
         this.notification = 'Miav!';
+        if (this.meowSound) {
+          this.meowSound.currentTime = 0; // start fra begyndelsen
+          this.meowSound.play();
+        }
         if (this.lives <= 0) {
           this.lives = 0;
           this.showStartAgain = true; // Vis popup'en
-
           this.stopTimers();
 
           return;
           } else {
             this.notification = 'Miaw';
+            if (this.meowSound) {
+              this.meowSound.currentTime = 0; // start fra begyndelsen
+              this.meowSound.play();
+            }
           }
         }
 
@@ -874,6 +962,21 @@ export default {
   },
 },
   mounted() { //kaldes, når komponenten er monteret på DOM'en; starter timers
+    this.popupSound = new Audio(require('@/assets/sound/brass-fail-11-a-207140.mp3'));
+    this.meowSound = new Audio(require('@/assets/sound/cat-growl-96248.mp3')); 
+    this.meowSound.volume = 0.5; // volume justering
+
+    const audio = this.$refs.bgMusic;
+    if (audio) {
+      // Sæt lydniveauet til 10%
+      audio.volume = 0.1;
+
+      // Prøv at afspille lyden (nogle browsere kræver brugerinteraktion)
+      audio.play().catch((error) => {
+        console.log('Kan ikke autostarte musik:', error);
+      });
+    }
+
     // Indlæs gemt dag fra localStorage eller brug 1, hvis ikke tilgængelig
     const savedDay = localStorage.getItem('catDay');
     if (savedDay) {
@@ -921,7 +1024,7 @@ export default {
     if (savedMoney) {
       this.money = parseInt(savedMoney, 10);
     } else {
-      this.money = 500;
+      this.money = 100;
     }
 
     // Hvis livene er 0 ved genindlæsning, vis popup
@@ -956,6 +1059,13 @@ export default {
   },
 
   beforeUnmount() { //metode der kaldes, lige før komponenten fjernes fra DOM'en; stopper timers
+
+    const audio = this.$refs.bgMusic;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+
     this.stopTimers();
   },
 
@@ -964,6 +1074,13 @@ export default {
 </script>
 
 <style scoped>
+.mute-button {
+  position: absolute;
+  top: 10px;
+  left: 70px;
+  z-index: 999;
+}
+
 .help-button {
   position: absolute; 
   top: 10px;

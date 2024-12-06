@@ -42,7 +42,7 @@ export default {
     const problemLevel = this.currentProblem === 'injured' ? (this.status.injured ? 0 : 100) : this.status[this.currentProblem];
 
     // Tjek om problemets niveau er under 75
-    if (problemLevel < 75) {
+    if (problemLevel < 99) {
       // Bestem billedet baseret på `currentProblem` og dets niveau
       switch (this.currentProblem) { //Switch-case statement, der bestemmer billedet baseret på kattens tilstand
         case 'hunger':
@@ -55,7 +55,7 @@ export default {
             return require('@/assets/images/DirtyCat_Level4.gif'); // Meget beskidt
           } else if (problemLevel < 50) {
             return require('@/assets/images/DirtyCat_Level3.gif'); // Beskidt
-          } else if (problemLevel < 75) {
+          } else if (problemLevel < 99) {
             return require('@/assets/images/DirtyCat_Level2.gif'); // Let beskidt
           } else {
             return require('@/assets/images/CatT.gif'); // Lidt beskidt
