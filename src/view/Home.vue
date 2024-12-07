@@ -13,6 +13,12 @@
       </v-btn>
 
 
+      <SettingsButton class="gear-icon"
+        @size-changed="updateCatSize" 
+        @mute-toggled="toggleMute" 
+      />
+
+
       <!-- Baggrundsmusik -->
       <audio 
         ref="bgMusic"
@@ -22,11 +28,11 @@
         style="display: none;">
       </audio>
 
-      <!-- Knap til at mute/unmute musikken -->
+      <!-- Knap til at mute/unmute musikken 
       <v-btn @click="toggleMute" class="mute-button">
       <v-icon>{{ isMuted ? 'mdi-volume-off' : 'mdi-volume-high' }}</v-icon>
       </v-btn>
-    
+      -->
 
       <!-- Debugging af kattens status (kun for testing) -->
       <CatStatusDebug
@@ -84,11 +90,12 @@
       <p class="dayNR"> DAG {{ day }} / 7</p>
       </v-progress-linear>
 
-
+      <!-- Indsætter CatResize komponenten og videregiver catSize 
       <v-bth class="gear-icon">
-      <!-- Indsætter CatResize komponenten og videregiver catSize -->
       <CatResize @size-changed="updateCatSize" />
       </v-bth>
+      -->
+
       <!-- Katten -->
         <!-- CatComponent er et komponent, der viser kattens billede baseret på dens status
         - :status="catStatus": Sender hele catStatus objektet som prop til komponenten
@@ -182,7 +189,7 @@
 
 
 <script>
-import CatResize from '@/components/CatResize.vue';
+//import CatResize from '@/components/CatResize.vue';
 import CatComponent from '@/components/Cat.vue';
 import LifeIndicator from '@/components/LifeIndicator.vue';
 import ActionButtonComponent from '@/components/ActionButton.vue';
@@ -192,12 +199,13 @@ import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiCurrencyUsd, mdiHelp, mdiAccountCircle} from '@mdi/js';
 import DragDrop from '@/components/DragDrop.vue'
 import CatStatusDebug from '@/components/CatStatusDebug.vue';
+import SettingsButton from '@/components/SettingsButton.vue';
 
 export default {
   name: 'HomeView',
   components: {
     DragDrop,
-    CatResize,
+    //CatResize,
     CatComponent,
     LifeIndicator,
     ActionButtonComponent,
@@ -205,6 +213,7 @@ export default {
     StartAgain,
     SvgIcon,
     CatStatusDebug,
+    SettingsButton,
   },
 
   watch: {
@@ -341,6 +350,8 @@ export default {
       this.isMuted = !this.isMuted;
       audio.muted = this.isMuted;
     },
+
+//her
 
     // det næste problem, som katten skal have
     selectNextProblem() {

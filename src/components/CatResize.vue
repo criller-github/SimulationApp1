@@ -1,3 +1,4 @@
+<!-- CatResize.vue komponent bliver ikke brugt -->
 <template>
 
 <v-speed-dial
