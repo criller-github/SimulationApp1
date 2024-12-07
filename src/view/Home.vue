@@ -57,6 +57,7 @@
       </v-tooltip>
       </v-btn>
 
+<!-- Admin-knap 
     <v-btn
       icon
       @click="$router.push('/admin')"
@@ -65,7 +66,7 @@
     >
     <svg-icon type="mdi" :path="mdiAccountCircle" :width="25" :height="25" color="white"></svg-icon>
     </v-btn>
-
+-->
 
       <!-- Livsindikator -->
       <!-- LifeIndicator er et komponent, der viser antallet af liv tilbage-->
@@ -1096,6 +1097,7 @@ export default {
   width: 60px;
   height: 60px;
   z-index: 1;
+
 }
 
 .HomeContainer {
