@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn 
           @click="navigateToAnotherPage" 
-          class="try-again-button"
+          class="try-again-button mb-4"
         >
           Ok
         </v-btn>

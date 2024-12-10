@@ -63,16 +63,24 @@
       </v-tooltip>
       </v-btn>
 
-<!-- Admin-knap 
-    <v-btn
+
+      <!-- Knap til at vise kataloget -->
+      <v-btn
       icon
-      @click="$router.push('/admin')"
-      class="admin-button"
-      color="grey darken-3"
-    >
-    <svg-icon type="mdi" :path="mdiAccountCircle" :width="25" :height="25" color="white"></svg-icon>
-    </v-btn>
--->
+      class="catalog-button"
+      color="blue"
+      @click="showCatalog = true"
+      >
+      <svg-icon type="mdi" :path="mdiStore"  :width="30" :height="30"></svg-icon>
+      </v-btn>
+
+      <CatCatalog 
+      :visible="showCatalog" 
+      :money="money" 
+      @update:visible="val => showCatalog = val" 
+      @item-purchased="handleItemPurchased" 
+      />
+
 
       <!-- Livsindikator -->
       <!-- LifeIndicator er et komponent, der viser antallet af liv tilbage-->
@@ -127,12 +135,43 @@
       - icon prop: Angiver hvilket ikon der skal vises på knappen
       - @action-performed event: Lytter efter en event fra ActionButtonComponent, når en handling udføres
        -->
-      <v-row justify="center" class="icon-Button">
+     <v-row justify="center" class="icon-Button">
         <ActionButtonComponent
           icon="mdi-food"
           label="Fodre" 
+          :foodSelected="!!selectedFoodItem"
+          @mousedown="startLongPress('mad')"
+          @mouseup="endLongPress"
+          @mouseleave="endLongPress"
+          @touchstart="startLongPress('mad')"
+          @touchend="endLongPress"
+          @touchcancel="endLongPress"
           @action-performed="handleActionPerformed"
         />
+        <!-- Popup-fold-ud-liste til viste items -->
+        <template v-if="currentCategoryFoldout === 'mad'">
+          <div class="foldout">
+            <div class="pl-4">Dit købte fodder:</div>
+            <v-container>
+              <v-row>
+                <v-col 
+                  v-for="(it, idx) in filteredInventory('mad')" 
+                  :key="idx" 
+                  cols="12"
+                  class="py-1"
+                >
+                  <v-card 
+                    @click="selectItemForCategory(it)" 
+                    color="red-darken-1"
+                    class="py-2 px-2"
+                  >
+                    {{ it.title }} (x{{it.uses}})
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+          </div>
+        </template>
         <!-- 
         - @action-interaction event: Lytter efter en event fra ActionButtonComponent, når brugeren interagerer med knappen
         - @interaction-start event: Lytter efter en event fra ActionButtonComponent, når brugeren starter en interaktion
@@ -196,10 +235,11 @@ import ActionButtonComponent from '@/components/ActionButton.vue';
 import NotificationComponent from '@/components/Notification.vue';
 import StartAgain from '@/components/StartAgain.vue';
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiCurrencyUsd, mdiHelp, mdiAccountCircle} from '@mdi/js';
+import { mdiCurrencyUsd, mdiHelp, mdiAccountCircle, mdiStore} from '@mdi/js';
 import DragDrop from '@/components/DragDrop.vue'
 import CatStatusDebug from '@/components/CatStatusDebug.vue';
 import SettingsButton from '@/components/SettingsButton.vue';
+import CatCatalog from '@/components/CatCatalog.vue'; 
 
 export default {
   name: 'HomeView',
@@ -214,6 +254,7 @@ export default {
     SvgIcon,
     CatStatusDebug,
     SettingsButton,
+    CatCatalog,
   },
 
   watch: {
@@ -297,6 +338,9 @@ export default {
 
   data() {
     return {
+      selectedFoodItem: null,
+      showCatalog: false,
+      inventory: JSON.parse(localStorage.getItem('inventory')) || [], // Inventory over købte ting
       isMuted: false,
       currentProblem: null, // Holder styr på det aktuelle problem
       lastProblem: null, // Holder styr på det sidst løste problem for at undgå gentagelser
@@ -305,22 +349,22 @@ export default {
       day: 1, // Tracker dage
       lives: 9, // antal liv katten starter med
       money: 100, // startsantallet af penge
-      mdiCurrencyUsd, mdiHelp, mdiAccountCircle,
+      mdiCurrencyUsd, mdiHelp, mdiAccountCircle, mdiStore,
       showMoneyTooltip: false, // Viser penge-tooltip
       isPlaying: false, // Holder styr på om brugeren leger med katten
       isCleaning: false, // Holder styr på om brugeren renser kattens bakke
       catStatus: {
-      hunger: 100, // Kattens sultniveau
-      hungerPausedUntil: null, // Tidspunkt for pause af sult for at give brugeren tid til at løse problemet
-      happiness: 100,
-      happinessPausedUntil: null,
-      hygiene: 100,
-      hygienePausedUntil: null,
-      injured: false, // true eller false fordi at det er en boolean
-      injuredPausedUntil: null,
-      weight: 50,
-      showDragDrop: false, // Vi initialiserer til false og sætter den baseret på localStorage
-    },
+        hunger: 100, // Kattens sultniveau
+        hungerPausedUntil: null, // Tidspunkt for pause af sult for at give brugeren tid til at løse problemet
+        happiness: 100,
+        happinessPausedUntil: null,
+        hygiene: 100,
+        hygienePausedUntil: null,
+        injured: false, // true eller false fordi at det er en boolean
+        injuredPausedUntil: null,
+        weight: 50,
+        showDragDrop: false, // Vi initialiserer til false og sætter den baseret på localStorage
+      },
       catSize: 1, // Standardstørrelse
       notification: '', // besked, der vises til brugeren
       meowSound: null, // tilføj en property til lyd
@@ -328,11 +372,19 @@ export default {
       popupSound: null,//popup-lyden
       showDragDrop: true, // Viser drag-and-drop komponenten
       notifiedStatuses: {
-      hunger: false,
-      happiness: false,
-      hygiene: false,
-      injured: false,
-    },
+        hunger: false,
+        happiness: false,
+        hygiene: false,
+        injured: false,
+      },
+      currentCategoryFoldout: null, // Holder styr på hvilken kategori, der er foldet ud
+      longPressTimer: null, // Holder styr på timeren for langt tryk
+      selectedItems: { // Holder styr på valgte items
+        mad: null,
+        legetøj: null,
+        rengøring: null,
+        medicin: null
+      },
     };
   },
   computed: {
@@ -341,7 +393,50 @@ export default {
       return this.catStatus.weight >= 100;
     },
   },
+
   methods: {
+
+    handleItemPurchased(item) {
+  if (this.money >= item.price) {
+    this.money -= item.price;
+    const existing = this.inventory.find(i => i.id === item.id);
+    if (existing) {
+      // Hvis vi allerede har denne type item, læg uses oveni
+      existing.uses += (item.uses || 10);
+    } else {
+      const purchasedItem = { ...item, uses: item.uses || 10 };
+      this.inventory.push(purchasedItem);
+    }
+    localStorage.setItem('inventory', JSON.stringify(this.inventory));
+    this.notification = 'Vare købt!';
+  } else {
+    this.notification = 'Ikke nok penge!';
+  }
+},
+
+    //håndterer 2 sekunders tryk på knappen
+    startLongPress(category) {
+      if (this.filteredInventory(category).length > 0) { 
+        this.longPressTimer = setTimeout(() => {
+          this.currentCategoryFoldout = category;
+        }, 2000); // 2 sek lang tryk
+      } else {
+        this.notification = "Du har ingen mad til fodring! Køb dit fodder i katte kataloget.";
+      }
+    },
+    endLongPress() {
+      clearTimeout(this.longPressTimer);
+    },
+    //returnerer kun de købte ting i den valgte kategori
+    filteredInventory(category) {
+      return this.inventory.filter(i => i.category === category);
+    },
+    //sætter det valgte item for en kategori og lukker foldout
+    selectItemForCategory(item) {
+  this.selectedFoodItem = item; 
+  this.currentCategoryFoldout = null;
+  this.notification = `Du har valgt ${item.title} til fodring!`;
+},
 
     toggleMute() {
       const audio = this.$refs.bgMusic;
@@ -729,19 +824,67 @@ export default {
     },
     //bestemmer hvilken metode der skal kaldes baseret på handlingen fra drag-and-drop
     handleActionPerformed(action) {
-      if (action === 'mdi-food') {
-        this.handleFeed(); // Kald handleFeed() i stedet for at ændre hunger direkte
-      } else if (action === 'mdi-tennis-ball') {
+    if (action === 'mdi-food') {
+      if (!this.selectedFoodItem) {
+        this.notification = "Du har ikke valgt noget mad! Hold fodder-knappen nede for at se din mad-inventar.";
+        return;
+      }
+
+      // Brug data fra selectedFoodItem til at øge hunger og weight
+      const previousHunger = this.catStatus.hunger;
+      this.catStatus.hunger += this.selectedFoodItem.hungerGain;
+      if (this.catStatus.hunger > 100) {
+        this.catStatus.hunger = 100;
+      }
+
+      this.catStatus.weight += this.selectedFoodItem.weightGain;
+      if (this.catStatus.weight > 150) {
+        this.catStatus.weight = 150;
+      }
+
+      // Reducer uses med 1
+      this.selectedFoodItem.uses--;
+
+      // Tjek om uses er nået til 0 og fjern item hvis det er tilfældet
+      if (this.selectedFoodItem.uses <= 0) {
+        this.inventory = this.inventory.filter(item => item.id !== this.selectedFoodItem.id);
+        this.notification = `Du har brugt op ${this.selectedFoodItem.title} og det er fjernet fra dit inventar!`;
+        this.selectedFoodItem = null; // Nulstil valgt item
+      } else {
+        // Hvis uses ikke er 0, opdater notification
+        this.notification = `Du har fodret katten med ${this.selectedFoodItem.title}!`;
+      }
+
+      // Opdater inventory i localStorage
+      localStorage.setItem('inventory', JSON.stringify(this.inventory));
+
+      // Håndter currentProblem hvis nødvendigt
+      if (this.currentProblem === 'hunger' && previousHunger < 100 && this.catStatus.hunger === 100) {
+        this.catStatus.hungerPausedUntil = Date.now() + 20000;
+
+        if (this.lives < 9) {
+          this.lives++;
+          this.notification += ' Et liv er genoprettet.';
+        }
+
+        this.lastProblem = 'hunger';
+        this.currentProblem = null;
+        setTimeout(() => {
+          this.selectNextProblem();
+        }, 5000);
+      }
+    } else if (action === 'mdi-tennis-ball') {
       // Start leg interaktion
       this.isPlaying = true;
-      } else if (action === 'mdi-emoticon-poop') {
-        // Start rengøringsinteraktion
-        this.isCleaning = true;
-      } else if (action === 'mdi-medical-bag') {
-        // Heal katten
-        this.handleHeal();
-      }
-    },
+    } else if (action === 'mdi-emoticon-poop') {
+      // Start rengøringsinteraktion
+      this.isCleaning = true;
+    } else if (action === 'mdi-medical-bag') {
+      // Heal katten
+      this.handleHeal();
+    }
+  },
+
     
     //håndterer interaktioner med katten
     handleInteraction(action) {
@@ -879,9 +1022,17 @@ export default {
   localStorage.removeItem('catStatus');
   localStorage.removeItem('currentProblem');
 
+  // Fjern inventory fra localStorage og nulstil
+  localStorage.removeItem('inventory');
+  this.inventory = [];
+  this.selectedFoodItem = null;
+  this.currentCategoryFoldout = null;
+
+
   this.notification = ''; // Nulstil notifikation
   this.showStartAgain = false; // Skjul restart popup
   this.startTimers(); // Genstart timerne
+  window.location.reload();
 },
 
 
@@ -1108,7 +1259,15 @@ export default {
   width: 60px;
   height: 60px;
   z-index: 1;
+}
 
+.catalog-button {
+  position: absolute;
+  top: 90px;
+  left: 10px;
+  width: 60px;
+  height: 60px;
+  z-index: 1;
 }
 
 .HomeContainer {
@@ -1175,5 +1334,17 @@ export default {
 }
 
 
+.foldout {
+  position: absolute;
+  bottom: 100px;
+  left: 10px; /* Flytter foldout til venstre for knappen */
+  background-color: rgba(255, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
 
 </style>

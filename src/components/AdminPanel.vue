@@ -5,6 +5,8 @@
     <v-row justify="center">
       <v-col cols="12" md="8" class="text-center">
         <h1 class="my-4">Velkommen til Admin Panel</h1>
+        
+        
         <v-row justify="center" class="my-4">
 
          <v-col cols="12" sm="10" md="8" lg="6" xl="4">
@@ -29,6 +31,29 @@
             </v-btn>
           </v-btn-toggle>
          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+
+        <!-- Nye knapper til Shop Items -->
+        <v-row justify="center" class="my-4">
+          <v-col cols="12" sm="10" md="8" lg="6" xl="4">
+            <v-btn-toggle class="my-4" mandatory>
+              <v-btn
+                :to="{ path: '/admin/shop' }"
+                color="blue"
+                large
+              >
+                Vis Shop Items
+              </v-btn>
+              <v-btn
+                :to="{ path: '/admin/shop/add' }"
+                color="blue"
+                large
+              >
+                Tilføj Ny Shop Item
+              </v-btn>
+            </v-btn-toggle>
+          </v-col>
         </v-row>
         <v-divider></v-divider>
         <!-- router-view er en vue-router placeholder komponent der vil vise de forskellige komponenter til adminpanelet (fx CatTextList) -->

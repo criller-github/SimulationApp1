@@ -14,6 +14,10 @@ import CatTextList from './components/CatTextList.vue';
 import AddCatText from './components/AddCatText.vue';
 import CatText from './components/CatText.vue';
 
+import ShopItemList from './components/ShopItemList.vue';
+import AddShopItem from './components/AddShopItem.vue';
+import ShopItem from './components/ShopItem.vue';
+
 import SvgIcon from '@jamescoyle/vue-icon';
 
 // Indlæs skrifttyper
@@ -35,6 +39,11 @@ const router = createRouter({
         { path: 'list', component: CatTextList, name: 'cattexts' },
         { path: 'add', component: AddCatText, name: 'add-cattext' },
         { path: ':id', component: CatText, name: 'cattext-details' },
+
+        // ShopItem ruter
+        { path: 'shop', component: ShopItemList, name: 'shopitems' },
+        { path: 'shop/add', component: AddShopItem, name: 'add-shopitem' },
+        { path: 'shop/:id', component: ShopItem, name: 'shopitem-details' },
       ],
     },
   ],

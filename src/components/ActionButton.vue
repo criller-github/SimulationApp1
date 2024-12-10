@@ -23,6 +23,7 @@ export default {
   props: {
     icon: String, // Modtager ikonnavnet fra parent (Home.vue)
     label: String, // Modtager label fra parent
+    foodSelected: Boolean // Modtager en boolean, der angiver om madknappen er valgt
   },
   methods: {
     onPointerDown(event) {
