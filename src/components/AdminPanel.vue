@@ -1,66 +1,61 @@
 <!-- AdminPanel fungerer som en overordnet struktur til admin-relaterede funktioner -->
 
 <template>
-  <v-container class="admin-container" fluid>
-    <v-row justify="center">
-      <v-col cols="12" md="8" class="text-center">
-        <h1 class="my-4">Velkommen til Admin Panel</h1>
-        
-        
-        <v-row justify="center" class="my-4">
+ <v-container class="admin-container" fluid>
+  <v-row justify="center">
+    <v-col cols="12" md="12" class="text-center">
+      <h1 class="my-4">Velkommen til Admin Panel</h1>
 
-         <v-col cols="12" sm="10" md="8" lg="6" xl="4">
-          <v-btn-toggle class="my-4" mandatory > <!-- mandatory betyder, at en knap altid skal være valgt -->
-            <!-- :to="{ path: '/admin/list' }" propen betyder, at knappen vil navigere til vue ruten /admin/list
-            :exact="true" sikrer, at router-linken kun er aktiv, når den præcise rute matcher-->
+      <v-row justify="space-between" class="my-4">
+        <!-- Første gruppe knapper -->
+        <v-col cols="12" md="6" class="d-flex justify-md-end justify-center">
+          <v-btn-toggle class="my-4" mandatory>
             <v-btn
               :to="{ path: '/admin/list' }"
               :exact="true"
               color="green"
               large
-              >
-            alle billedenavne
+            >
+              Alle Billedenavne
             </v-btn>
-          
             <v-btn
               :to="{ path: '/admin/add' }"
               color="green"
               large
-              >
-            Tilføj Ny Tekst
+            >
+              Tilføj Ny Tekst
             </v-btn>
           </v-btn-toggle>
-         </v-col>
-        </v-row>
-        <v-divider></v-divider>
+        </v-col>
 
-        <!-- Nye knapper til Shop Items -->
-        <v-row justify="center" class="my-4">
-          <v-col cols="12" sm="10" md="8" lg="6" xl="4">
-            <v-btn-toggle class="my-4" mandatory>
-              <v-btn
-                :to="{ path: '/admin/shop' }"
-                color="blue"
-                large
-              >
-                Vis Shop Items
-              </v-btn>
-              <v-btn
-                :to="{ path: '/admin/shop/add' }"
-                color="blue"
-                large
-              >
-                Tilføj Ny Shop Item
-              </v-btn>
-            </v-btn-toggle>
-          </v-col>
-        </v-row>
-        <v-divider></v-divider>
-        <!-- router-view er en vue-router placeholder komponent der vil vise de forskellige komponenter til adminpanelet (fx CatTextList) -->
-        <router-view></router-view> 
-      </v-col>
-    </v-row>
-  </v-container>
+        <!-- Anden gruppe knapper -->
+        <v-col cols="12" md="6" class="d-flex justify-md-start justify-center">
+          <v-btn-toggle class="my-4" mandatory>
+            <v-btn
+              :to="{ path: '/admin/shop' }"
+              color="blue"
+              large
+            >
+              Alle Shop Items
+            </v-btn>
+            <v-btn
+              :to="{ path: '/admin/shop/add' }"
+              color="blue"
+              large
+            >
+              Tilføj Nyt Shop Item
+            </v-btn>
+          </v-btn-toggle>
+        </v-col>
+      </v-row>
+      
+      <v-divider></v-divider>
+      
+      <router-view></router-view>
+    </v-col>
+  </v-row>
+</v-container>
+
 </template>
 
 <script>
