@@ -385,7 +385,7 @@ export default {
       }
     },
 
-    //håndterer 2 sekunders tryk på knappen
+    //håndterer 1 sekunders tryk på knappen
     startLongPress(category) { //metode der kaldes når brugeren trykker på knappen
       if (this.filteredInventory(category).length > 0) {  // Hvis der er mad i inventory
         this.longPressTimer = setTimeout(() => { // Start en timer

@@ -92,6 +92,11 @@ export default {
 
     // Opretter et billede, der repræsenterer det trukne element
     createDragImage(event) {
+      const imgSrc = this.getDragImageSrc();
+      // Hvis imgSrc er en tom streng, returner uden at lave et billede
+      if (!imgSrc) {
+        return; 
+      }
       // Opretter et billede, der repræsenterer det trukne element
       this.dragImage = document.createElement('img'); // Opretter et img-element
       this.dragImage.src = this.getDragImageSrc(); // Sætter src-attributten til det korrekte billede baseret på handlingen
@@ -184,10 +189,16 @@ export default {
       }
     },
     getDragImageSrc() {
-      // Returner det passende billede baseret på handlingen
-      switch (this.icon) { //Switch-case statement, der bestemmer billedet baseret på handlingen
-        case 'mdi-food': // Hvis handlingen er 'food'
-          return require('@/assets/images/food_bowl.png'); // Returner stien til madskålen
+      switch (this.icon) {
+        case 'mdi-food':
+        // Tilføj dette if-statement
+        if (this.foodSelected) {
+          // Hvis der er valgt mad i inventory, vis madskålen
+          return require('@/assets/images/food_bowl.png');
+        } else {
+          // Hvis der ikke er valgt mad, returner en tom streng, så der ikke vises noget billede
+          return '';
+        }
         case 'mdi-tennis-ball':
           return require('@/assets/images/cat_toy.png');
         case 'mdi-emoticon-poop':
