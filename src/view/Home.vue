@@ -390,7 +390,7 @@ export default {
       if (this.filteredInventory(category).length > 0) {  // Hvis der er mad i inventory
         this.longPressTimer = setTimeout(() => { // Start en timer
           this.currentCategoryFoldout = category; // Fold kategorien ud
-        }, 2000); // 2 sek lang tryk
+        }, 1000); // 1 sek lang tryk
       } else {
         this.notification = "Du har ingen mad til fodring! Køb dit fodder i katte kataloget.";
       }
