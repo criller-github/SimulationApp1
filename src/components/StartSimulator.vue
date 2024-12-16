@@ -42,15 +42,25 @@ export default {
       // Hvis spillet allerede er i gang
       this.buttonText = "Fortsæt hvor du slap";
       this.title = "Velkommen tilbage!";
-      this.description = "Husk, at...<br>- I løbet af 7 dage får du notifikationer om fodring, pleje, leg og rengøring.<br>- Din kat har i alt 9 liv og hver gang du beder om hjælp, koster det ét liv.<br>- Det vil koste dig penge, hver gang katten skal fodres, plejes, eller gøre rent.<br>";
+      this.description = `Husk, at...<br>- I løbet af 7 dage får du ansvaret for en virtuel kat!<br> 
+        - Du skal tage højde for kattens kropsprog som viser dens nuværende behov.<br>
+        - En kat kan sagtens have flere behov på samme tid, men du kan kun se ét ad gangen.<br>
+        - Katten har i alt 9 liv som går ned hver gang ét af kattens behov ikke bliver mødt.<br>
+        - Du har mulighed for at spørge om hjælp, dog koster det ét liv hver gang.<br>
+        - Hvis kattens skal fodres, har du mulighed for at købe forskellige variatoner af mad i shoppen.<br>
+        - Undervejs vil du modtage virtuelle penge som du kan enten kan bruge på shoppen eller medicin. `;
     } else {
       // Ingen igangværende status, behold standard tekster
       this.buttonText = "Start kæledyr simulator";
       this.title = "Velkommen til din personlige kæledyrs-simulator!";
       this.description = `
-        I løbet af 7 dage får du notifikationer om fodring, pleje, leg og rengøring.<br>
-        - Din kat har i alt 9 liv og hver gang du beder om hjælp, koster det ét liv.<br>
-        - Det vil koste dig penge, hver gang katten skal fodres, plejes, eller gøre rent.<br>
+        - I løbet af 7 dage får du ansvaret for en virtuel kat!<br>
+        - Du skal tage højde for kattens kropsprog som viser dens nuværende behov.<br>
+        - En kat kan sagtens have flere behov på samme tid, men du kan kun se ét ad gangen.<br>
+        - Katten har i alt 9 liv som går ned hver gang ét af kattens behov ikke bliver mødt.<br>
+        - Du har mulighed for at spørge om hjælp, dog koster det ét liv hver gang.<br>
+        - Hvis kattens skal fodres, har du mulighed for at købe forskellige variatoner af mad i shoppen.<br>
+        - Undervejs vil du modtage virtuelle penge som du kan enten kan bruge på shoppen eller medicin.
       `;
     }
 },
