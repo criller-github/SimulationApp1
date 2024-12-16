@@ -1,3 +1,5 @@
+<!-- backend komponent til at vise og redigere den valgte katte-tekst -->
+
 <template>
     <v-container>
         <!--card'et vises kun, hvis der er en currentCatText-->

@@ -1,3 +1,4 @@
+<!-- siden der "søger" efter en ny kat, når brugeren har opbrugt alle kattens liv -->
 <template>
   <v-container class="d-flex justify-center align-center" style="min-height: 100vh;">
     <div class="dialog-card">

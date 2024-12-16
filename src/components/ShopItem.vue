@@ -1,3 +1,5 @@
+<!-- backend komponent til at vise og redigere den valgte shop item -->
+
 <template>
   <v-container>
     <v-card v-if="currentShopItem">
@@ -45,6 +47,7 @@ export default {
     };
   },
   methods: {
+    // Henter en specifik vare fra databasen baseret på ID (URL-parametret this.$route.params.id)
     getShopItem(id) {
       ShopItemDataService.get(id)
         .then(response => {
@@ -52,6 +55,7 @@ export default {
         })
         .catch(e => console.log(e));
     },
+    // Opdaterer en vare i databasen baseret på ID (URL-parametret this.$route.params.id)
     updateShopItem() {
       ShopItemDataService.update(this.currentShopItem.id, this.currentShopItem)
         .then(() => {
@@ -60,6 +64,7 @@ export default {
         })
         .catch(e => console.log(e));
     },
+    // Sletter en vare fra databasen baseret på ID (URL-parametret this.$route.params.id)
     deleteShopItem() {
       ShopItemDataService.delete(this.currentShopItem.id)
         .then(() => {
@@ -69,6 +74,7 @@ export default {
     }
   },
   mounted() {
+    // Når komponenten er indlæst, hentes den valgte vare fra databasen
     this.getShopItem(this.$route.params.id);
   }
 };

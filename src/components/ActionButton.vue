@@ -27,7 +27,6 @@ export default {
   },
   methods: {
     onPointerDown(event) {
-
     event.preventDefault(); // Forhindrer standard adfærd
 
   // Tilføjer event listeners for bevægelse og frigivelse af klik/touch på vinduet afhængigt af inputtype
@@ -201,10 +200,10 @@ export default {
     },
   },
   data() {
-    return {
-      dragImage: null,
-      startX: 0,
-      startY: 0,
+    return { 
+      dragImage: null, // Initialiserer drag-billedet til null
+      startX: 0, // Initialiserer x-koordinatet for museklikket/touchet til 0
+      startY: 0, // Initialiserer y-koordinatet for museklikket/touchet til 0
     };
   },
 };

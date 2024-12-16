@@ -1,3 +1,5 @@
+<!-- det lille "preview" som afspilles første gang for at vise at man kan bruge drag and drop -->
+
 <template>
   <div class="drag-drop-wrapper">
     <v-img

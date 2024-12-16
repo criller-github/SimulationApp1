@@ -1,5 +1,8 @@
+<!-- tilføj et shop item, baseret på AddCatTet.vue -->
+
 <template>
   <v-container>
+    <!-- hvis den ikke er submittet -->
     <v-card v-if="!submitted">
       <v-card-title>
         <span class="text-h5">Tilføj Ny Shop Vare</span>
@@ -21,19 +24,20 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="green" @click="saveShopItem">Gem</v-btn>
+        <v-btn color="blue" @click="saveShopItem">Gem</v-btn>
       </v-card-actions>
     </v-card>
 
+    <!-- hvis den er submittet -->
     <div v-else>
       <h4>Vare tilføjet</h4>
-      <v-btn color="green" @click="newShopItem">Tilføj mere</v-btn>
+      <v-btn color="blue" @click="newShopItem">Tilføj mere</v-btn>
     </div>
   </v-container>
 </template>
 
 <script>
-import ShopItemDataService from "@/services/ShopItemDataService";
+import ShopItemDataService from "@/services/ShopItemDataService"; 
 
 export default {
   name: "AddShopItem",
@@ -63,6 +67,7 @@ export default {
         uses: Number(this.shopitem.uses),
     };
 
+      // send data til API
       ShopItemDataService.create(data)
         .then((response) => {
           console.log(response.data);
@@ -72,6 +77,7 @@ export default {
           console.log(e);
         });
     },
+    // reset form
     newShopItem() {
       this.submitted = false;
       this.shopitem = {

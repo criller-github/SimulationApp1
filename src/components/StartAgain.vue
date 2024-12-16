@@ -1,3 +1,5 @@
+<!-- pop-op'en for at vise brugeren at spillet er slut -->
+
 <template>
   <v-dialog v-model="localVisible" persistent @close="closeDialog" max-width="500px">
     <v-card class="dialog-card">

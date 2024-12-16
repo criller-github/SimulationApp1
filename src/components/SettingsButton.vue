@@ -1,3 +1,5 @@
+<!-- indstillings-knapperne -->
+
 <template>
   <div>
     <!-- Gear-knap til at åbne dialogen -->
@@ -53,9 +55,11 @@ export default {
     };
   },
   methods: {
+    // Metode til at vælge kattestørrelse
     selectSize(size) {
       this.$emit("size-changed", size);
     },
+    // Metode til at skifte lyd til og fra
     toggleMute() {
       this.isMuted = !this.isMuted;
       this.$emit("mute-toggled", this.isMuted);

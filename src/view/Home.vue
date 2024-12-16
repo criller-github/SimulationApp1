@@ -12,12 +12,11 @@
         <svg-icon type="mdi" :path="mdiHelp" :width="25" :height="25" color="white"></svg-icon>
       </v-btn>
 
-
+      <!-- Indsætter SettingsButton komponenten og lytter efter events fra den -->
       <SettingsButton class="gear-icon"
         @size-changed="updateCatSize" 
         @mute-toggled="toggleMute" 
       />
-
 
       <!-- Baggrundsmusik -->
       <audio 
@@ -27,19 +26,6 @@
         loop 
         style="display: none;">
       </audio>
-
-      <!-- Knap til at mute/unmute musikken 
-      <v-btn @click="toggleMute" class="mute-button">
-      <v-icon>{{ isMuted ? 'mdi-volume-off' : 'mdi-volume-high' }}</v-icon>
-      </v-btn>
-      -->
-
-      <!-- Debugging af kattens status (kun for testing) -->
-      <CatStatusDebug
-      :status="catStatus"
-      :lives="lives"
-      :currentProblem="currentProblem"/>
-
 
       <!-- Visning af penge -->      
       <v-btn
@@ -51,7 +37,6 @@
       <svg-icon type="mdi" :path="mdiCurrencyUsd"></svg-icon>
       <v-tooltip
         content-class="custom-tooltip"
-
         activator="parent"
         location="bottom"
         v-model="showMoneyTooltip"
@@ -73,7 +58,6 @@
       >
       <svg-icon type="mdi" :path="mdiStore"  :width="30" :height="30"></svg-icon>
       </v-btn>
-
       <CatCatalog 
       :visible="showCatalog" 
       :money="money" 
@@ -81,11 +65,9 @@
       @item-purchased="handleItemPurchased" 
       />
 
-
       <!-- Livsindikator -->
       <!-- LifeIndicator er et komponent, der viser antallet af liv tilbage-->
       <LifeIndicator :lives="lives" />
-
 
       <!-- dagsnummer -->
       <v-progress-linear
@@ -97,12 +79,6 @@
       >
       <p class="dayNR"> DAG {{ day }} / 7</p>
       </v-progress-linear>
-
-      <!-- Indsætter CatResize komponenten og videregiver catSize 
-      <v-bth class="gear-icon">
-      <CatResize @size-changed="updateCatSize" />
-      </v-bth>
-      -->
 
       <!-- Katten -->
         <!-- CatComponent er et komponent, der viser kattens billede baseret på dens status
@@ -122,7 +98,7 @@
         @show-notification="showNotification"
       />
      
-      <!-- Sender currentProblem som prop til CatComponent -->
+      <!--  Drag-and-drop komponenten -->
       <div v-if="showDragDrop" class="drag-drop">
         <DragDrop />
       </div>
@@ -132,10 +108,11 @@
       <!-- Handlingsknapper 
       - <v-row justify="center">: Wrapper til knapperne, centrerer indholdet horisontalt.
       - <ActionButtonComponent>: En genanvendelig komponent for hver handling (fodre, lege, rense, heale)
-      - icon prop: Angiver hvilket ikon der skal vises på knappen
-      - @action-performed event: Lytter efter en event fra ActionButtonComponent, når en handling udføres
+      - @mousedown/up/leave: Lytter efter en musenedtrykning/musenedslipning/musets forladelse på knappen
+      - @touchstart/end/cancel: Lytter efter en touchstart/touchend/touchcancel på knappen
+      - @action-performed: Lytter efter en event fra ActionButtonComponent, når brugeren interagerer med knappen
        -->
-     <v-row justify="center" class="icon-Button">
+      <v-row justify="center" class="icon-Button">
         <ActionButtonComponent
           icon="mdi-food"
           label="Fodre" 
@@ -148,7 +125,7 @@
           @touchcancel="endLongPress"
           @action-performed="handleActionPerformed"
         />
-        <!-- Popup-fold-ud-liste til viste items -->
+        <!-- Popup-fold-ud-liste til viste items i inventory -->
         <template v-if="currentCategoryFoldout === 'mad'">
           <div class="foldout">
             <div class="pl-4">Dit købte fodder:</div>
@@ -173,9 +150,7 @@
           </div>
         </template>
         <!-- 
-        - @action-interaction event: Lytter efter en event fra ActionButtonComponent, når brugeren interagerer med knappen
-        - @interaction-start event: Lytter efter en event fra ActionButtonComponent, når brugeren starter en interaktion
-        - @interaction-end event: Lytter efter en event fra ActionButtonComponent, når brugeren afslutter en interaktion
+        - @action-interaction event: Lytter efter en event fra ActionButtonComponent, når brugeren interagerer/starter/afslutter med knappen
          -->
         <ActionButtonComponent
           icon="mdi-tennis-ball"
@@ -237,7 +212,6 @@ import StartAgain from '@/components/StartAgain.vue';
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiCurrencyUsd, mdiHelp, mdiAccountCircle, mdiStore} from '@mdi/js';
 import DragDrop from '@/components/DragDrop.vue'
-import CatStatusDebug from '@/components/CatStatusDebug.vue';
 import SettingsButton from '@/components/SettingsButton.vue';
 import CatCatalog from '@/components/CatCatalog.vue'; 
 
@@ -245,27 +219,24 @@ export default {
   name: 'HomeView',
   components: {
     DragDrop,
-    //CatResize,
     CatComponent,
     LifeIndicator,
     ActionButtonComponent,
     NotificationComponent,
     StartAgain,
     SvgIcon,
-    CatStatusDebug,
     SettingsButton,
     CatCatalog,
   },
 
   watch: {
-    
     // en watcher til at tilføre miaw tekster til ændringen af værdien af kattens status
     'catStatus.hunger'(newVal, oldVal) {
-      if (newVal < 50 && oldVal >= 75) {
-        this.notification = 'Miaw!';
-        if (this.meowSound) {
+      if (newVal < 50 && oldVal >= 75) { // hvis sulten er under 50 og var over 75
+        this.notification = 'Miaw!'; // viser en notifikation
+        if (this.meowSound) { // hvis meowSound er defineret
         this.meowSound.currentTime = 0; // start fra begyndelsen
-        this.meowSound.play();
+        this.meowSound.play(); // afspil lyden
       }
       }
     },
@@ -273,7 +244,7 @@ export default {
       if (newVal < 50 && oldVal >= 75) {
         this.notification = 'Miaw!';
         if (this.meowSound) {
-        this.meowSound.currentTime = 0; // start fra begyndelsen
+        this.meowSound.currentTime = 0;
         this.meowSound.play();
       }
       }
@@ -282,7 +253,7 @@ export default {
       if (newVal < 50 && oldVal >= 75) {
         this.notification = 'Miaw!';
         if (this.meowSound) {
-        this.meowSound.currentTime = 0; // start fra begyndelsen
+        this.meowSound.currentTime = 0;
         this.meowSound.play();
       }
       }
@@ -291,37 +262,37 @@ export default {
       if (newVal === true && oldVal === false) {
         this.notification = 'Miaw!';
         if (this.meowSound) {
-        this.meowSound.currentTime = 0; // start fra begyndelsen
+        this.meowSound.currentTime = 0;
         this.meowSound.play();
       }
       }
     },
 
     //når day ændres, gemmes den nye værdi i localStorage under nøglen catDay
-    day(newDay) {
-    localStorage.setItem('catDay', newDay);
+    day(newDay) { //metode der kaldes når day ændres
+    localStorage.setItem('catDay', newDay); //gemmer day i localStorage
     },
     catStatus: {
-      handler(newStatus) {
-        localStorage.setItem('catStatus', JSON.stringify(newStatus));
+      handler(newStatus) { //metode der kaldes når catStatus ændres
+        localStorage.setItem('catStatus', JSON.stringify(newStatus)); //gemmer catStatus i localStorage som en streng ved at bruge JSON.stringify
       },
-      deep: true,
+      deep: true, //lytter efter ændringer i dybden af objektet for at gemme det korrekt i localStorage
     },
-    currentProblem(newProblem) {
-      if (newProblem) {
-        localStorage.setItem('currentProblem', newProblem);
+    currentProblem(newProblem) { //metode der kaldes når currentProblem ændres
+      if (newProblem) { //hvis newProblem er sand
+        localStorage.setItem('currentProblem', newProblem); //gemmer currentProblem i localStorage
       } else {
-        localStorage.removeItem('currentProblem');
+        localStorage.removeItem('currentProblem'); //ellers fjernes currentProblem fra localStorage
       }
     },
-    lives(newLives) {
-      localStorage.setItem('lives', newLives);
+    lives(newLives) { //metode der kaldes når lives ændres
+      localStorage.setItem('lives', newLives); //gemmer lives i localStorage
     },
     money(newMoney) {
-      localStorage.setItem('money', newMoney);
+      localStorage.setItem('money', newMoney); //gemmer money i localStorage
     },
 
-    showStartAgain(newVal) {
+    showStartAgain(newVal) { //metode der kaldes når showStartAgain ændres
       if (newVal === true) {
         // Når popup bliver vist:
         if (this.popupSound) {
@@ -338,10 +309,10 @@ export default {
 
   data() {
     return {
-      selectedFoodItem: null,
-      showCatalog: false,
+      selectedFoodItem: null, // Holder styr på valgt mad
+      showCatalog: false, // Holder styr på om kataloget er åbent
       inventory: JSON.parse(localStorage.getItem('inventory')) || [], // Inventory over købte ting
-      isMuted: false,
+      isMuted: false, // Holder styr på om lyden er slået fra
       currentProblem: null, // Holder styr på det aktuelle problem
       lastProblem: null, // Holder styr på det sidst løste problem for at undgå gentagelser
       problems: ['hunger', 'happiness', 'hygiene', 'injured'], // Liste over mulige problemer
@@ -356,7 +327,7 @@ export default {
       catStatus: {
         hunger: 100, // Kattens sultniveau
         hungerPausedUntil: null, // Tidspunkt for pause af sult for at give brugeren tid til at løse problemet
-        happiness: 100,
+        happiness: 100, // Kattens lykkeniveau
         happinessPausedUntil: null,
         hygiene: 100,
         hygienePausedUntil: null,
@@ -395,37 +366,37 @@ export default {
   },
 
   methods: {
-
-    handleItemPurchased(item) {
-  if (this.money >= item.price) {
-    this.money -= item.price;
-    const existing = this.inventory.find(i => i.id === item.id);
-    if (existing) {
-      // Hvis vi allerede har denne type item, læg uses oveni
-      existing.uses += (item.uses || 10);
-    } else {
-      const purchasedItem = { ...item, uses: item.uses || 10 };
-      this.inventory.push(purchasedItem);
-    }
-    localStorage.setItem('inventory', JSON.stringify(this.inventory));
-    this.notification = 'Vare købt!';
-  } else {
-    this.notification = 'Ikke nok penge!';
-  }
-},
+    handleItemPurchased(item) { //metode der kaldes når brugeren køber et item
+      if (this.money >= item.price) { // Hvis brugeren har nok penge til at købe item 
+        this.money -= item.price; // Trækker prisen fra brugerens pengebeholdning 
+        const existing = this.inventory.find(i => i.id === item.id); // Tjekker om item allerede er i inventory
+        if (existing) { 
+          // Hvis vi allerede har denne type item, læg uses oveni
+          existing.uses += (item.uses || 10);
+        } else {
+          // Ellers tilføj item til inventory
+          const purchasedItem = { ...item, uses: item.uses || 10 };
+          this.inventory.push(purchasedItem);
+        }
+        localStorage.setItem('inventory', JSON.stringify(this.inventory)); // Gemmer inventory i localStorage
+        this.notification = 'Vare købt!'; 
+      } else {
+        this.notification = 'Ikke nok penge!'; 
+      }
+    },
 
     //håndterer 2 sekunders tryk på knappen
-    startLongPress(category) {
-      if (this.filteredInventory(category).length > 0) { 
-        this.longPressTimer = setTimeout(() => {
-          this.currentCategoryFoldout = category;
+    startLongPress(category) { //metode der kaldes når brugeren trykker på knappen
+      if (this.filteredInventory(category).length > 0) {  // Hvis der er mad i inventory
+        this.longPressTimer = setTimeout(() => { // Start en timer
+          this.currentCategoryFoldout = category; // Fold kategorien ud
         }, 2000); // 2 sek lang tryk
       } else {
         this.notification = "Du har ingen mad til fodring! Køb dit fodder i katte kataloget.";
       }
     },
-    endLongPress() {
-      clearTimeout(this.longPressTimer);
+    endLongPress() { //metode der kaldes når brugeren slipper knappen
+      clearTimeout(this.longPressTimer); // Ryd timeren
     },
     //returnerer kun de købte ting i den valgte kategori
     filteredInventory(category) {
@@ -433,11 +404,12 @@ export default {
     },
     //sætter det valgte item for en kategori og lukker foldout
     selectItemForCategory(item) {
-  this.selectedFoodItem = item; 
-  this.currentCategoryFoldout = null;
-  this.notification = `Du har valgt ${item.title} til fodring!`;
-},
+      this.selectedFoodItem = item; 
+      this.currentCategoryFoldout = null;
+      this.notification = `Du har valgt ${item.title} til fodring!`;
+    },
 
+    //håndterer mute/unmute af baggrundsmusik
     toggleMute() {
       const audio = this.$refs.bgMusic;
       if (!audio) return;
@@ -445,8 +417,6 @@ export default {
       this.isMuted = !this.isMuted;
       audio.muted = this.isMuted;
     },
-
-//her
 
     // det næste problem, som katten skal have
     selectNextProblem() {
@@ -461,25 +431,25 @@ export default {
       availableProblems = availableProblems.filter(problem => problem !== this.lastProblem); 
 
       // Tjek om der er problemer ≤ 30
-  const lowThresholdProblems = [];
+      const lowThresholdProblems = []; // Opretter en tom liste til problemer under eller lig med 30 
 
-  if (this.catStatus.hunger <= 30) {
-    lowThresholdProblems.push('hunger');
-  }
-  if (this.catStatus.happiness <= 30) {
-    lowThresholdProblems.push('happiness');
-  }
-  if (this.catStatus.hygiene <= 30) {
-    lowThresholdProblems.push('hygiene');
-  }
+      if (this.catStatus.hunger <= 30) {
+        lowThresholdProblems.push('hunger');
+      }
+      if (this.catStatus.happiness <= 30) {
+        lowThresholdProblems.push('happiness');
+      }
+      if (this.catStatus.hygiene <= 30) {
+        lowThresholdProblems.push('hygiene');
+      }
       
       // Hvis der findes problemer under eller lig med 30, begræns valget til disse
-  if (lowThresholdProblems.length > 0) {
-    const criticalSet = availableProblems.filter(p => lowThresholdProblems.includes(p));
-    if (criticalSet.length > 0) {
-      availableProblems = criticalSet;
-    }
-  }
+      if (lowThresholdProblems.length > 0) {
+        const criticalSet = availableProblems.filter(p => lowThresholdProblems.includes(p));
+        if (criticalSet.length > 0) {
+          availableProblems = criticalSet;
+        }
+      }
 
       // Hvis ingen andre problemer er tilgængelige, tillad valg af det sidste problem igen
       if (availableProblems.length === 0) {
@@ -673,29 +643,27 @@ export default {
 
         // Tjek om sultniveauet har nået 100
         if (this.catStatus.hunger === 100 && previousHunger < 100) {
-  this.catStatus.hungerPausedUntil = Date.now() + 20000;
-
-  if (this.currentProblem === 'hunger') {
-    // Kun hvis det aktuelle problem er 'hunger' gives der liv.
-    if (this.lives < 9) {
-      this.lives++;
-      this.notification = 'Du har fodret katten! Et liv er genoprettet.';
-    } else {
-      this.notification = 'Du har fodret katten!';
-    }
-
-    this.lastProblem = 'hunger';
-    this.currentProblem = null;
-    setTimeout(() => {
-      this.selectNextProblem();
-    }, 5000);
-  } else {
-    // Ikke det aktuelle problem -> ingen liv
-    this.notification = 'Du har fodret katten!';
-  }
-} else {
-  this.notification = 'Du har fodret katten!';
-}
+          this.catStatus.hungerPausedUntil = Date.now() + 20000;
+          if (this.currentProblem === 'hunger') {
+          // Kun hvis det aktuelle problem er 'hunger' gives der liv.
+            if (this.lives < 9) {
+              this.lives++;
+              this.notification = 'Du har fodret katten! Et liv er genoprettet.';
+            } else {
+              this.notification = 'Du har fodret katten!';
+            }
+            this.lastProblem = 'hunger';
+            this.currentProblem = null;
+            setTimeout(() => {
+              this.selectNextProblem();
+            }, 5000);
+          } else {
+            // Ikke det aktuelle problem -> ingen liv
+            this.notification = 'Du har fodret katten!';
+          }
+        } else {
+          this.notification = 'Du har fodret katten!';
+        }
       } else { // Hvis brugeren ikke har nok penge
         this.notification = 'Du har ikke nok penge til at fodre katten!';
       }
@@ -703,118 +671,112 @@ export default {
 
     // Håndterer leg med katten, opdaterer lykke og reducerer vægt, hvis nødvendigt
     handlePlay() {
-  const previousHappiness = this.catStatus.happiness; // Gem tidligere lykkeværdi
-
-  this.catStatus.happiness = 100; // Sæt lykke til 100
-
-  // Reducer vægten, hvis over normal
-  if (this.catStatus.weight > 50) {
-    this.catStatus.weight -= 5;
-    if (this.catStatus.weight < 50) {
-      this.catStatus.weight = 50;
-    }
-  }
-
-  // Tjek om lykken netop er nået 100 (fra under 100)
-  if (previousHappiness < 100 && this.catStatus.happiness === 100) {
-    this.catStatus.happinessPausedUntil = Date.now() + 20000; // Pause happiness i 20 sek.
-
-    // Kun hvis det aktuelle problem er "happiness" gives der ekstra liv
-    if (this.currentProblem === 'happiness') {
-      if (this.lives < 9) {
-        this.lives++;
-        this.notification = 'Katten er nu glad! Et liv er genoprettet.';
-      } else {
-        this.notification = 'Katten er nu glad!';
+      const previousHappiness = this.catStatus.happiness; // Gem tidligere lykkeværdi
+      this.catStatus.happiness = 100; // Sæt lykke til 100
+      // Reducer vægten, hvis over normal
+      if (this.catStatus.weight > 50) {
+        this.catStatus.weight -= 5;
+        if (this.catStatus.weight < 50) {
+          this.catStatus.weight = 50;
+        }
       }
-      this.lastProblem = 'happiness';
-      this.currentProblem = null;
-      setTimeout(() => {
-        this.selectNextProblem();
-      }, 5000);
-    } else {
-      // Ikke det aktuelle problem -> ingen ekstra liv
-      this.notification = 'Katten er nu glad!';
-    }
-  } else {
-    this.notification = 'Du har leget med katten!';
-  }
-},
+
+      // Tjek om lykken netop er nået 100 (fra under 100)
+      if (previousHappiness < 100 && this.catStatus.happiness === 100) {
+        this.catStatus.happinessPausedUntil = Date.now() + 20000; // Pause happiness i 20 sek.
+
+        // Kun hvis det aktuelle problem er "happiness" gives der ekstra liv
+        if (this.currentProblem === 'happiness') {
+          if (this.lives < 9) {
+            this.lives++;
+            this.notification = 'Katten er nu glad! Et liv er genoprettet.';
+          } else {
+            this.notification = 'Katten er nu glad!';
+          }
+          this.lastProblem = 'happiness';
+          this.currentProblem = null;
+          setTimeout(() => {
+            this.selectNextProblem();
+          }, 5000);
+        } else {
+          // Ikke det aktuelle problem -> ingen ekstra liv
+          this.notification = 'Katten er nu glad!';
+          }
+      } else {
+        this.notification = 'Du har leget med katten!';
+      }
+    },
 
     //håndterer rengøring af kattebakken, opdaterer hygiejne og trækker penge
-   handleClean() {
-  const cleanCost = 5;
-  if (this.money >= cleanCost) {
-    const previousHygiene = this.catStatus.hygiene; // Gem tidligere hygiejneværdi
-    this.money -= cleanCost;
-    this.catStatus.hygiene = 100; // Sæt hygiejne til 100
-
-    if (previousHygiene < 100 && this.catStatus.hygiene === 100) {
-      this.catStatus.hygienePausedUntil = Date.now() + 20000; // Pause hygiene i 20 sek.
-
-      // Kun hvis det aktuelle problem er "hygiene" gives der ekstra liv
-      if (this.currentProblem === 'hygiene') {
-        if (this.lives < 9) {
-          this.lives++;
-          this.notification = 'Katten er nu ren! Et liv er genoprettet.';
+    handleClean() {
+      const cleanCost = 5;
+      if (this.money >= cleanCost) {
+        const previousHygiene = this.catStatus.hygiene; // Gem tidligere hygiejneværdi
+        this.money -= cleanCost;
+        this.catStatus.hygiene = 100; // Sæt hygiejne til 100
+        if (previousHygiene < 100 && this.catStatus.hygiene === 100) {
+          this.catStatus.hygienePausedUntil = Date.now() + 20000; // Pause hygiene i 20 sek.
+          // Kun hvis det aktuelle problem er "hygiene" gives der ekstra liv
+          if (this.currentProblem === 'hygiene') {
+            if (this.lives < 9) {
+              this.lives++;
+              this.notification = 'Katten er nu ren! Et liv er genoprettet.';
+            } else {
+              this.notification = 'Katten er nu ren!';
+            }
+            this.lastProblem = 'hygiene';
+            this.currentProblem = null;
+            setTimeout(() => {
+              this.selectNextProblem();
+            }, 5000);
+          } else {
+            // Ikke det aktuelle problem
+            this.notification = 'Katten er nu ren!';
+            }
         } else {
-          this.notification = 'Katten er nu ren!';
+          this.notification = 'Du har renset kattebakken!';
         }
-        this.lastProblem = 'hygiene';
-        this.currentProblem = null;
-        setTimeout(() => {
-          this.selectNextProblem();
-        }, 5000);
       } else {
-        // Ikke det aktuelle problem
-        this.notification = 'Katten er nu ren!';
+        this.notification = 'Du har ikke nok penge til at rense kattebakken!';
       }
-    } else {
-      this.notification = 'Du har renset kattebakken!';
-    }
-  } else {
-    this.notification = 'Du har ikke nok penge til at rense kattebakken!';
-  }
-},
+    },
 
     // håndterer healing af katten, hvis den er skadet, og trækker penge
     handleHeal() {
-  const healCost = 50;
-  if (this.money >= healCost && this.catStatus.injured) {
-    const wasInjured = this.catStatus.injured; // Gem om katten var skadet
-    this.money -= healCost;
-    this.catStatus.injured = false;
-    this.catStatus.injuredPausedUntil = Date.now() + 20000; // Pause "injured" i 20 sek.
-
-    // Tjek om katten netop er helet fra skadet til ikke-skadet
-    if (wasInjured && !this.catStatus.injured) {
-      // Kun hvis det aktuelle problem er "injured" gives der ekstra liv
-      if (this.currentProblem === 'injured') {
-        if (this.lives < 9) {
-          this.lives++;
-          this.notification = 'Du har healet katten! Et liv er genoprettet.';
+      const healCost = 50;
+      if (this.money >= healCost && this.catStatus.injured) {
+        const wasInjured = this.catStatus.injured; // Gem om katten var skadet
+        this.money -= healCost;
+        this.catStatus.injured = false;
+        this.catStatus.injuredPausedUntil = Date.now() + 20000; // Pause "injured" i 20 sek.
+        // Tjek om katten netop er helet fra skadet til ikke-skadet
+        if (wasInjured && !this.catStatus.injured) {
+          // Kun hvis det aktuelle problem er "injured" gives der ekstra liv
+          if (this.currentProblem === 'injured') {
+            if (this.lives < 9) {
+              this.lives++;
+              this.notification = 'Du har healet katten! Et liv er genoprettet.';
+            } else {
+              this.notification = 'Du har healet katten!';
+            }
+            this.lastProblem = 'injured';
+            this.currentProblem = null;
+            setTimeout(() => {
+              this.selectNextProblem();
+            }, 10000);
+          } else {
+            // Ikke det aktuelle problem
+            this.notification = 'Du har healet katten!';
+          }
         } else {
           this.notification = 'Du har healet katten!';
         }
-        this.lastProblem = 'injured';
-        this.currentProblem = null;
-        setTimeout(() => {
-          this.selectNextProblem();
-        }, 10000);
+      } else if (this.catStatus.injured) {
+        this.notification = 'Du har ikke nok penge til at heale katten!';
       } else {
-        // Ikke det aktuelle problem
-        this.notification = 'Du har healet katten!';
+        this.notification = 'Katten er ikke skadet.';
       }
-    } else {
-      this.notification = 'Du har healet katten!';
-    }
-  } else if (this.catStatus.injured) {
-    this.notification = 'Du har ikke nok penge til at heale katten!';
-  } else {
-    this.notification = 'Katten er ikke skadet.';
-  }
-},
-
+    },
 
     //sikrer, at behovsværdierne ikke bliver negative
     handleNeedUpdate(need) { //metode der kaldes når der er behov for at opdatere kattens behov og sikrer at behovene ikke går under 0
@@ -829,22 +791,18 @@ export default {
         this.notification = "Du har ikke valgt noget mad! Hold fodder-knappen nede for at se din mad-inventar.";
         return;
       }
-
       // Brug data fra selectedFoodItem til at øge hunger og weight
       const previousHunger = this.catStatus.hunger;
       this.catStatus.hunger += this.selectedFoodItem.hungerGain;
       if (this.catStatus.hunger > 100) {
         this.catStatus.hunger = 100;
       }
-
       this.catStatus.weight += this.selectedFoodItem.weightGain;
       if (this.catStatus.weight > 150) {
         this.catStatus.weight = 150;
       }
-
       // Reducer uses med 1
       this.selectedFoodItem.uses--;
-
       // Tjek om uses er nået til 0 og fjern item hvis det er tilfældet
       if (this.selectedFoodItem.uses <= 0) {
         this.inventory = this.inventory.filter(item => item.id !== this.selectedFoodItem.id);
@@ -854,111 +812,106 @@ export default {
         // Hvis uses ikke er 0, opdater notification
         this.notification = `Du har fodret katten med ${this.selectedFoodItem.title}!`;
       }
-
       // Opdater inventory i localStorage
       localStorage.setItem('inventory', JSON.stringify(this.inventory));
-
       // Håndter currentProblem hvis nødvendigt
       if (this.currentProblem === 'hunger' && previousHunger < 100 && this.catStatus.hunger === 100) {
         this.catStatus.hungerPausedUntil = Date.now() + 20000;
-
         if (this.lives < 9) {
           this.lives++;
           this.notification += ' Et liv er genoprettet.';
         }
-
         this.lastProblem = 'hunger';
         this.currentProblem = null;
         setTimeout(() => {
           this.selectNextProblem();
         }, 5000);
       }
-    } else if (action === 'mdi-tennis-ball') {
-      // Start leg interaktion
-      this.isPlaying = true;
-    } else if (action === 'mdi-emoticon-poop') {
-      // Start rengøringsinteraktion
-      this.isCleaning = true;
-    } else if (action === 'mdi-medical-bag') {
-      // Heal katten
-      this.handleHeal();
-    }
-  },
+      } else if (action === 'mdi-tennis-ball') {
+        // Start leg interaktion
+        this.isPlaying = true;
+      } else if (action === 'mdi-emoticon-poop') {
+        // Start rengøringsinteraktion
+        this.isCleaning = true;
+      } else if (action === 'mdi-medical-bag') {
+        // Heal katten
+        this.handleHeal();
+      }
+    },
 
-    
     //håndterer interaktioner med katten
     handleInteraction(action) {
-  const now = Date.now();
-  if (now - this.lastInteractionTime >= 200) {
-    // Leg med katten (happiness)
-    if (action === 'mdi-tennis-ball' && this.isPlaying) {
-      const previousHappiness = this.catStatus.happiness;
-      this.catStatus.happiness += 1;
-      if (this.catStatus.happiness > 100) this.catStatus.happiness = 100;
+      const now = Date.now();
+      if (now - this.lastInteractionTime >= 200) { // Tjek om der er gået 200 ms siden sidste interaktion
 
-      // Reducer vægt hvis over normal
-      if (this.catStatus.weight > 50) {
-        this.catStatus.weight -= 0.5;
-        if (this.catStatus.weight < 50) {
-          this.catStatus.weight = 50;
-        }
-      }
+        // Leg med katten (happiness)
+        if (action === 'mdi-tennis-ball' && this.isPlaying) { // Hvis brugeren leger med katten og isPlaying er sand
+          const previousHappiness = this.catStatus.happiness; // Gem tidligere lykkeværdi
+          this.catStatus.happiness += 1; // Øg lykke med 1
+          if (this.catStatus.happiness > 100) this.catStatus.happiness = 100; // Sørg for at lykke ikke går over 100
 
-      // Tjek om lykke netop nåede 100
-      if (previousHappiness < 100 && this.catStatus.happiness === 100) {
-        this.catStatus.happinessPausedUntil = Date.now() + 20000; // Pause happiness
-
-        if (this.currentProblem === 'happiness') {
-          if (this.lives < 9) {
-            this.lives++;
-            this.notification = 'Katten er nu glad! Et liv er genoprettet.';
-          } else {
-            this.notification = 'Katten er nu glad!';
+          // Reducer vægt hvis over normal
+          if (this.catStatus.weight > 50) { // Hvis kattens vægt er over 50
+            this.catStatus.weight -= 0.5; // Reducer vægt med 0.5
+            if (this.catStatus.weight < 50) { // Sørg for at vægten ikke går under 50
+              this.catStatus.weight = 50; // Sæt vægten til 50
+            }
           }
-          this.lastProblem = 'happiness';
-          this.currentProblem = null;
-          setTimeout(() => {
-            this.selectNextProblem();
-          }, 5000);
-        } else {
-          // Ikke det aktuelle problem
-          this.notification = 'Katten er nu glad!';
-        }
-        this.isPlaying = false;
-      }
 
-    // Rense katten (hygiene)
-    } else if (action === 'mdi-emoticon-poop' && this.isCleaning) {
-      const previousHygiene = this.catStatus.hygiene;
-      this.catStatus.hygiene += 1;
-      if (this.catStatus.hygiene > 100) this.catStatus.hygiene = 100;
-
-      // Tjek om hygiejne netop nåede 100
-      if (previousHygiene < 100 && this.catStatus.hygiene === 100) {
-        this.catStatus.hygienePausedUntil = Date.now() + 20000; // Pause hygiene
-
-        if (this.currentProblem === 'hygiene') {
-          if (this.lives < 9) {
-            this.lives++;
-            this.notification = 'Katten er nu ren! Et liv er genoprettet.';
-          } else {
-            this.notification = 'Katten er nu ren!';
+          // Tjek om lykke netop nåede 100
+          if (previousHappiness < 100 && this.catStatus.happiness === 100) { // Hvis lykke var under 100 og er nået til 100
+            this.catStatus.happinessPausedUntil = Date.now() + 20000; // Pause happiness i 20 sekunder
+            if (this.currentProblem === 'happiness') { // Hvis det aktuelle problem er lykke
+              if (this.lives < 9) {
+                this.lives++;
+                this.notification = 'Katten er nu glad! Et liv er genoprettet.';
+              } else {
+                this.notification = 'Katten er nu glad!';
+              }
+              this.lastProblem = 'happiness';
+              this.currentProblem = null; // Nulstil det aktuelle problem
+              setTimeout(() => { // Vælg næste problem efter 5 sekunder
+                this.selectNextProblem();
+              }, 5000);
+            } else {
+              // Ikke det aktuelle problem
+              this.notification = 'Katten er nu glad!';
+            }
+            this.isPlaying = false; // Sæt isPlaying til false for at stoppe lege
           }
-          this.lastProblem = 'hygiene';
-          this.currentProblem = null;
-          setTimeout(() => {
-            this.selectNextProblem();
-          }, 5000);
-        } else {
-          // Ikke det aktuelle problem
-          this.notification = 'Katten er nu ren!';
+
+        // Rense katten (hygiene)
+        } else if (action === 'mdi-emoticon-poop' && this.isCleaning) {
+          const previousHygiene = this.catStatus.hygiene;
+          this.catStatus.hygiene += 1;
+          if (this.catStatus.hygiene > 100) this.catStatus.hygiene = 100;
+
+          // Tjek om hygiejne netop nåede 100
+          if (previousHygiene < 100 && this.catStatus.hygiene === 100) {
+            this.catStatus.hygienePausedUntil = Date.now() + 20000; // Pause hygiene
+
+            if (this.currentProblem === 'hygiene') {
+              if (this.lives < 9) {
+                this.lives++;
+                this.notification = 'Katten er nu ren! Et liv er genoprettet.';
+              } else {
+                this.notification = 'Katten er nu ren!';
+              }
+              this.lastProblem = 'hygiene';
+              this.currentProblem = null;
+              setTimeout(() => {
+                this.selectNextProblem();
+              }, 5000);
+            } else {
+              // Ikke det aktuelle problem
+              this.notification = 'Katten er nu ren!';
+            }
+            this.isCleaning = false;
+          }
         }
-        this.isCleaning = false;
+        this.lastInteractionTime = now;
       }
-    }
-    this.lastInteractionTime = now;
-  }
-},
+    },
 
     
     //håndterer starten af interaktionen
@@ -995,49 +948,42 @@ export default {
       }
     },
 
-
-
-     closePopup() {
-       this.showRestartPopup = false; // Luk popup'en
-      },
+    closePopup() {
+      this.showRestartPopup = false; // Luk popup'en
+    },
 
     // Nulstiller spillet
     resetGame() {
-  this.lives = 9; // Reset liv
-  this.money = 100; // Reset penge
-  this.catStatus = {
-    hunger: 100,
-    hungerPausedUntil: null,
-    happiness: 100,
-    happinessPausedUntil: null,
-    hygiene: 100,
-    hygienePausedUntil: null,
-    injured: false,
-    injuredPausedUntil: null,
-    weight: 50,
-  };
-  this.day = 1; // Reset dag
-  localStorage.setItem('catDay', this.day); // Opdater localStorage
-  // Nulstil gemt katStatus i localStorage
-  localStorage.removeItem('catStatus');
-  localStorage.removeItem('currentProblem');
-
-  // Fjern inventory fra localStorage og nulstil
-  localStorage.removeItem('inventory');
-  this.inventory = [];
-  this.selectedFoodItem = null;
-  this.currentCategoryFoldout = null;
-
-
-  this.notification = ''; // Nulstil notifikation
-  this.showStartAgain = false; // Skjul restart popup
-  this.startTimers(); // Genstart timerne
-  window.location.reload();
-},
+      this.lives = 9; // Reset liv
+      this.money = 100; // Reset penge
+      this.catStatus = {
+        hunger: 100,
+        hungerPausedUntil: null,
+        happiness: 100,
+        happinessPausedUntil: null,
+        hygiene: 100,
+        hygienePausedUntil: null,
+        injured: false,
+        injuredPausedUntil: null,
+        weight: 50,
+      };
+      this.day = 1; // Reset dag
+      localStorage.setItem('catDay', this.day); // Opdater localStorage
+      // Nulstil gemt katStatus i localStorage
+      localStorage.removeItem('catStatus');
+      localStorage.removeItem('currentProblem');
+      // Fjern inventory fra localStorage og nulstil
+      localStorage.removeItem('inventory');
+      this.inventory = [];
+      this.selectedFoodItem = null;
+      this.currentCategoryFoldout = null;
 
 
-
-
+      this.notification = ''; // Nulstil notifikation
+      this.showStartAgain = false; // Skjul restart popup
+      this.startTimers(); // Genstart timerne
+      window.location.reload();
+    },
 
     // genererer hjælpeteksten baseret på kattens nuværende tilstand
     getHelpMessage() {
@@ -1054,6 +1000,7 @@ export default {
         return 'Katten har det godt lige nu!';
     }
   },
+
   // initialiserer alle timers, der styrer spillets dynamik over tid
   startTimers() {
     // Timer for penge

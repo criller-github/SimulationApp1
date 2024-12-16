@@ -1,3 +1,5 @@
+<!-- listen for shop items -->
+
 <template>
   <v-container>
     <v-row align="center" class="mt-4 mb-0 pb-0">
@@ -22,47 +24,46 @@
             :key="item.id"
             :value="index"
           >
-            <v-expansion-panel-title>
-              <span class="headline">{{ item.title }} ({{ item.category }})</span>
-            </v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-row align="center">
-                <v-col cols="4">
-                  <strong>Titel:</strong> {{ item.title }}
-                </v-col>
-                <v-col cols="4">
-  <strong>Beskrivelse:</strong> {{ item.description }}
-</v-col>
-<v-col cols="2">
-  <strong>Pris:</strong> {{ item.price }}
-</v-col>
-<v-col cols="3">
-  <strong>Hunger Gain:</strong> {{ item.hungerGain }}
-</v-col>
-<v-col cols="3">
-  <strong>Weight Gain:</strong> {{ item.weightGain }}
-</v-col>
-<v-col cols="3">
-  <strong>Uses:</strong> {{ item.uses }}
-</v-col>
-
-
-                <v-col cols="2">
-                  <v-btn
-                    color="green"
-                    :to="'/admin/shop/'+ item.id"
-                    class="mt-2"
-                  >
+          <v-expansion-panel-title>
+            <span class="headline">{{ item.title }} ({{ item.category }})</span>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-row align="center">
+              <v-col cols="4">
+                <strong>Titel:</strong> {{ item.title }}
+              </v-col>
+              <v-col cols="4">
+                <strong>Beskrivelse:</strong> {{ item.description }}
+              </v-col>
+              <v-col cols="2">
+                <strong>Pris:</strong> {{ item.price }}
+              </v-col>
+              <v-col cols="3">
+                <strong>Hunger Gain:</strong> {{ item.hungerGain }}
+              </v-col>
+              <v-col cols="3">
+                <strong>Weight Gain:</strong> {{ item.weightGain }}
+              </v-col>
+              <v-col cols="3">
+                <strong>Uses:</strong> {{ item.uses }}
+              </v-col>
+              
+              <v-col cols="2">
+                <v-btn
+                color="green"
+                :to="'/admin/shop/'+ item.id"
+                class="mt-2"
+                >
                   Rediger
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-col>
-    </v-row>
-  </v-container>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-col>
+  </v-row>
+</v-container>
 </template>
 
 <script>
@@ -75,11 +76,12 @@ export default {
     const shopitems = ref([]);
     const currentIndex = ref(null);
     const searchCategory = ref(null);
-
+    
+    // henter shop items
     const retrieveShopItems = () => {
       ShopItemDataService.getAll(searchCategory.value)
         .then(response => {
-          shopitems.value = response.data;
+          shopitems.value = response.data; 
           currentIndex.value = null;
         })
         .catch(e => console.log(e));

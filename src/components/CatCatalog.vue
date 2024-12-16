@@ -1,3 +1,4 @@
+<!-- Katalog for at købe mad -->
 <template>
   <v-dialog class="boks" :model-value="visible" @update:model-value="$emit('update:visible', $event)" persistent>
     <v-card>

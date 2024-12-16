@@ -51,7 +51,7 @@
       
       <v-divider></v-divider>
       
-      <router-view></router-view>
+      <router-view></router-view> <!-- Her vises de forskellige komponenter afhængigt af hvilken knap der er trykket på -->
     </v-col>
   </v-row>
 </v-container>

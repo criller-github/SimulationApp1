@@ -1,5 +1,5 @@
 // src/main.js
-import { createApp } from 'vue';
+import { createApp } from 'vue'; 
 import { createRouter, createWebHistory } from 'vue-router';
 import vuetify from './plugins/vuetify';
 import { loadFonts } from './plugins/webfontloader';
@@ -9,7 +9,7 @@ import StartSimulator from './components/StartSimulator.vue';
 import Home from './view/Home.vue';
 import CatSearch from './components/CatSearch.vue';
 
-import AdminPanel from './components/AdminPanel.vue'; // Opdateret import
+import AdminPanel from './components/AdminPanel.vue';
 import CatTextList from './components/CatTextList.vue';
 import AddCatText from './components/AddCatText.vue';
 import CatText from './components/CatText.vue';
