@@ -110,8 +110,8 @@ export default {
 
 .boks {
   position: absolute !important;
-  max-width: 450px;
-  max-height: 500px;
+  max-width: 500px;
+  max-height: 700px;
 }
 
 </style>
