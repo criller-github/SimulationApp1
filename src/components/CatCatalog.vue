@@ -1,7 +1,9 @@
 <!-- Katalog for at købe mad -->
 <template>
-  <v-dialog class="boks" :model-value="visible" @update:model-value="$emit('update:visible', $event)" persistent>
-    <v-card>
+  <!-- Dialog til at vise kataloget -->
+  <v-dialog name="boks" class="boks" :model-value="visible" @update:model-value="$emit('update:visible', $event)" persistent>
+    <!-- card til at vise kataloget -->
+    <v-card name="card">
       <v-card-title class="d-flex justify-space-between">
         Katte Katalog
         <v-btn icon @click="$emit('update:visible', false)">
@@ -57,18 +59,19 @@
 </template>
 
 <script>
-import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiClose, mdiFood, mdiWeightGram , mdiRepeat } from '@mdi/js';
-import ShopItemDataService from '@/services/ShopItemDataService';
+import SvgIcon from '@jamescoyle/vue-icon'; // Importer vue-icon
+import { mdiClose, mdiFood, mdiWeightGram , mdiRepeat } from '@mdi/js'; // Importer mdiClose, mdiFood, mdiWeightGram og mdiRepeat
+import ShopItemDataService from '@/services/ShopItemDataService'; // Importer ShopItemDataService
 
 export default {
   props: {
-  visible: Boolean,
-  money: Number
+    // Props til at vise dialogen
+    visible: Boolean, // Prop til at vise penge
+    money: Number,
     },
 
   components: {
-    SvgIcon
+    SvgIcon // Komponent til at vise ikoner
   },
 
   data() {
@@ -83,17 +86,22 @@ export default {
     };
   },
   methods: {
+    // @vuese
+    // Metode til at vælge kategori
+    // @arg argumentet cat er kategorien, der skal vælges
     selectCategory(cat) {
       this.selectedCategory = cat;
       // Hent items fra backend
-      ShopItemDataService.getAll(cat)
+      ShopItemDataService.getAll(cat) // Henter alle items fra backend
         .then(response => {
           this.shopItems = response.data;
         })
         .catch(e => console.log(e));
     },
-    // Ved køb
-    buyItem(item) {
+    // køb item
+    buyItem(item) { 
+      // Metode til at købe item fra kataloget
+      // @arg argumentet item er det item, der skal købes
         this.$emit('item-purchased', item);
     }
   }
