@@ -13,12 +13,15 @@ import CatTextDataService from "@/services/CatTextDataService"; //Importerer Cat
 export default {
   name: 'CatComponent', //Komponentens navn
   props: {
-    status: Object, // Modtager kattens status fra the parent (Home.vue)
-    catSize: { // Modtager kattens størrelse som prop fra forælderen
-        type: Number, 
+    // Modtager kattens status fra the parent (Home.vue)
+    status: Object,
+    // Modtager kattens størrelse som prop fra forælderen
+    catSize: {
+        type: Number, // Typen er et tal, fordi det er en størrelse
         default: 1, // Standard størrelse
       },
-    currentProblem: { // Modtager det aktuelle problem fra forælderen(home.vue)
+    // Modtager det aktuelle problem fra forælderen(home.vue)
+    currentProblem: {
     type: String,  // Typen er en streng fordi det er en tekst (hunger, happiness, hygiene, injured)
     default: null, // Standardværdi er null fordi der ikke er noget aktuelt problem i starten
   },
@@ -31,6 +34,7 @@ export default {
     };
   },
   computed: {
+  // @vuese
   catImage() {
     if (!this.currentProblem) {
       // Hvis der ikke er et aktuelt problem så bliver standardbilledet vist
@@ -76,7 +80,7 @@ export default {
     }
   },
   
-
+  // @vuese
    imageId() {
       //Beregner et imageId baseret på kattens tilstand, som vi bruger til at hente den korrekte tekst fra backenden
       if (!this.currentProblem) {
@@ -107,7 +111,7 @@ export default {
 },
   methods: {
     // Håndterer når en handling droppes hen på katten
-    
+    // @vuese
     playMeow() {
           // Nulstil lyden, hvis den allerede afspilles (for at undgå overlap hvis brugeren klikker flere gange hurtigt)
       this.meowSound.play();
@@ -127,6 +131,7 @@ export default {
         this.catText = ""; //Sætter catText til en tom streng
       }
     },
+    // @vuese
     showNotification(message) {
     // Kun opdater notification, hvis der ikke allerede er en besked
     if (!this.notification) {
@@ -136,12 +141,14 @@ export default {
   },
   //'Mounted' betyder, at noget er blevet sat op og er klar til brug
   mounted() {
+    // @vuese
     // Importer lydfilen og opret et Audio-objekt
     this.meowSound = new Audio(require('@/assets/sound/cat-growl-96248.mp3')); //Vi bruger require til at importere lydfilen og opretter et nyt audio objekt
     this.fetchCatText(); //Henter teksten, når komponenten monteres
     this.lastImageId = this.imageId; //Gemmer det sidste imageId, der blev brugt til at hente tekst
   },
   watch: {
+    // @vuese
     imageId(newVal, oldVal) { //Watcheren lytter efter ændringer i imageId og kalder fetchCatText, når der sker en ændring
       if (newVal !== oldVal) { //Hvis det nye imageId er forskelligt fra det gamle imageId, kaldes fetchCatText
         this.fetchCatText(); //Henter teksten, når imageId ændres
@@ -151,6 +158,7 @@ export default {
 
   //'BeforeUnmount' betyder, at noget er ved at blive fjernet eller pakket væk
   beforeUnmount() {
+    // @vuese
     // Sørger for at stoppe lyden og frigive ressourcer, når komponenten fjernes
     this.meowSound.pause();
     this.meowSound = null;

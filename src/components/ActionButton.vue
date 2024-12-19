@@ -24,10 +24,10 @@ export default {
     // Modtager ikonnavnet fra parent (home.vue)
     icon: String, // Modtager label fra parent (home.vue)
     label: String, // Modtager om mad er valgt fra parent (home.vue)
-    foodSelected: Boolean // Modtager om mad er valgt fra parent (home.vue)
+    foodSelected: Boolean
   },
   methods: {
-    // @vuese
+    
     // Metode til at håndtere event listeners for bevægelse og frigivelse af klik/touch på vinduet afhængigt af inputtype og udsende en event (interaction-start) når interaktionen starter
     onPointerDown(event) {
       event.preventDefault(); // Forhindrer standard adfærd
@@ -52,7 +52,6 @@ export default {
       this.$emit('interaction-start', this.icon);
     },
 
-    // @vuese
     // Håndterer positionen af drag-billedet og interaktionen med katten
     onPointerMove(event) {
       // Forhindrer standard scroll-adfærd på touch-enheder
@@ -74,7 +73,6 @@ export default {
       this.checkInteraction(event);
     },
 
-    // @vuese
     // Håndterer musefrigivelse/touchfrigivelse og fjerne event listeners (interaction-end), drag-billedet og tjekker for droppet over katten og udsender en event når interaktionen slutter
     onPointerUp(event) {
       // Fjerner event listeners

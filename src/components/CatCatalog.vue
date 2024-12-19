@@ -87,8 +87,8 @@ export default {
   },
   methods: {
     // @vuese
-    // Metode til at vælge kategori
-    // @arg argumentet cat er kategorien, der skal vælges
+    // Vælg kategori af items
+    // @arg parameteret cat er kategorien, der skal vælges
     selectCategory(cat) {
       this.selectedCategory = cat;
       // Hent items fra backend
@@ -98,10 +98,12 @@ export default {
         })
         .catch(e => console.log(e));
     },
-    // køb item
+    // @vuese
+    // køb item og send det tilbage til parent
+    // @arg parameteret item er det item, der skal købes
     buyItem(item) { 
       // Metode til at købe item fra kataloget
-      // @arg argumentet item er det item, der skal købes
+      // @arg parameteret item er det item, der skal købes
         this.$emit('item-purchased', item);
     }
   }

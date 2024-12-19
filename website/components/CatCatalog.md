@@ -18,7 +18,7 @@ Importer ShopItemDataService
 <!-- @vuese:CatCatalog:events:start -->
 |Event Name|Description|Parameters|
 |---|---|---|
-|item-purchased|Metode til at købe item fra kataloget|argumentet item er det item, der skal købes|
+|item-purchased|Metode til at købe item fra kataloget|parameteret item er det item, der skal købes|
 
 <!-- @vuese:CatCatalog:events:end -->
 
@@ -28,7 +28,8 @@ Importer ShopItemDataService
 <!-- @vuese:CatCatalog:methods:start -->
 |Method|Description|Parameters|
 |---|---|---|
-|selectCategory|Metode til at vælge kategori|argumentet cat er kategorien, der skal vælges|
+|selectCategory|Vælg kategori af items|parameteret cat er kategorien, der skal vælges|
+|buyItem|køb item og send det tilbage til parent|parameteret item er det item, der skal købes|
 
 <!-- @vuese:CatCatalog:methods:end -->
 

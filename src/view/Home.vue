@@ -786,47 +786,47 @@ export default {
     },
     //bestemmer hvilken metode der skal kaldes baseret på handlingen fra drag-and-drop
     handleActionPerformed(action) {
-    if (action === 'mdi-food') {
-      if (!this.selectedFoodItem) {
-        this.notification = "Du har ikke valgt noget mad! Hold fodder-knappen nede for at se din mad-inventar.";
-        return;
-      }
-      // Brug data fra selectedFoodItem til at øge hunger og weight
-      const previousHunger = this.catStatus.hunger;
-      this.catStatus.hunger += this.selectedFoodItem.hungerGain;
-      if (this.catStatus.hunger > 100) {
-        this.catStatus.hunger = 100;
-      }
-      this.catStatus.weight += this.selectedFoodItem.weightGain;
-      if (this.catStatus.weight > 150) {
-        this.catStatus.weight = 150;
-      }
-      // Reducer uses med 1
-      this.selectedFoodItem.uses--;
-      // Tjek om uses er nået til 0 og fjern item hvis det er tilfældet
-      if (this.selectedFoodItem.uses <= 0) {
-        this.inventory = this.inventory.filter(item => item.id !== this.selectedFoodItem.id);
-        this.notification = `Du har brugt op ${this.selectedFoodItem.title} og det er fjernet fra dit inventar!`;
-        this.selectedFoodItem = null; // Nulstil valgt item
-      } else {
-        // Hvis uses ikke er 0, opdater notification
-        this.notification = `Du har fodret katten med ${this.selectedFoodItem.title}!`;
-      }
-      // Opdater inventory i localStorage
-      localStorage.setItem('inventory', JSON.stringify(this.inventory));
-      // Håndter currentProblem hvis nødvendigt
-      if (this.currentProblem === 'hunger' && previousHunger < 100 && this.catStatus.hunger === 100) {
-        this.catStatus.hungerPausedUntil = Date.now() + 20000;
-        if (this.lives < 9) {
-          this.lives++;
-          this.notification += ' Et liv er genoprettet.';
+      if (action === 'mdi-food') {
+        if (!this.selectedFoodItem) {
+          this.notification = "Du har ikke valgt noget mad! Hold fodder-knappen nede for at se din mad-inventar.";
+          return;
         }
-        this.lastProblem = 'hunger';
-        this.currentProblem = null;
-        setTimeout(() => {
-          this.selectNextProblem();
-        }, 5000);
-      }
+        // Brug data fra selectedFoodItem til at øge hunger og weight
+        const previousHunger = this.catStatus.hunger;
+        this.catStatus.hunger += this.selectedFoodItem.hungerGain;
+        if (this.catStatus.hunger > 100) {
+          this.catStatus.hunger = 100;
+        }
+        this.catStatus.weight += this.selectedFoodItem.weightGain;
+        if (this.catStatus.weight > 150) {
+          this.catStatus.weight = 150;
+        }
+        // Reducer uses med 1
+        this.selectedFoodItem.uses--;
+        // Tjek om uses er nået til 0 og fjern item hvis det er tilfældet
+        if (this.selectedFoodItem.uses <= 0) {
+          this.inventory = this.inventory.filter(item => item.id !== this.selectedFoodItem.id);
+          this.notification = `Du har brugt op ${this.selectedFoodItem.title} og det er fjernet fra dit inventar!`;
+          this.selectedFoodItem = null; // Nulstil valgt item
+        } else {
+          // Hvis uses ikke er 0, opdater notification
+          this.notification = `Du har fodret katten med ${this.selectedFoodItem.title}!`;
+        }
+        // Opdater inventory i localStorage
+        localStorage.setItem('inventory', JSON.stringify(this.inventory));
+        // Håndter currentProblem hvis nødvendigt
+        if (this.currentProblem === 'hunger' && previousHunger < 100 && this.catStatus.hunger === 100) {
+          this.catStatus.hungerPausedUntil = Date.now() + 20000;
+          if (this.lives < 9) {
+            this.lives++;
+            this.notification += ' Et liv er genoprettet.';
+          }
+          this.lastProblem = 'hunger';
+          this.currentProblem = null;
+          setTimeout(() => {
+            this.selectNextProblem();
+          }, 5000);
+        }
       } else if (action === 'mdi-tennis-ball') {
         // Start leg interaktion
         this.isPlaying = true;
